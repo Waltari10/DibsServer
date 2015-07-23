@@ -67,15 +67,8 @@ app.use(function (req, res, next) {
 	req.testing = 'testing';
 	return next();
 });
- 
-app.get('/', function(request, response, next){
-  console.log('get route', req.testing);
-  res.end();
-});
 
 app.ws('/', function (ws, req) {
-	console.log("connection");
-
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk);
 		var json = JSON.parse(message);
@@ -134,7 +127,7 @@ function registerEvent(json, ws) {
 		console.log('SELECT 1 FROM user WHERE email = ' + mysqlConnection.escape(json["email"]));
 		mysqlConnection.query('SELECT 1 FROM user WHERE email= ' + mysqlConnection.escape(json["email"]), function (err, fields, rows) {
 			if (err) throw err;
-			if (fields.length === 0){ //User with this email doesn't exist
+			if (fields.length === 0){ //user with this email doesn't exist
 				console.log('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json["email"]) + ', ' + mysqlConnection.escape(json["nickname"]) + ', "' + bcrypt.hashSync(json["password"], salt) + '"');
 				mysqlConnection.query('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json["email"]) + ', ' + mysqlConnection.escape(json["nickname"]) + ', "' + bcrypt.hashSync(json["password"], salt) + '")', function(err, result) {
 					if (err) {
