@@ -1,159 +1,236 @@
-#!/bin/env node
-//  OpenShift sample Node application
-var express = require('express');
-var fs      = require('fs');
+"use strict";
 
+var StringDecoder     = require('string_decoder').StringDecoder; //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
+var bcrypt		      = require('bcrypt'); 
+var mysql             = require('mysql');
+var express           = require('express');
+var session 	      = require('express-session');
+var crypto            = require('crypto');
 
-/**
- *  Define the sample application.
- */
-var SampleApp = function() {
+var server_port       = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var mysql_port        = process.env.OPENSHIFT_MYSQL_DB_PORT || 8080;
+var mysql_host		  = process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1';
+var mysql_user        = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
+var mysql_database    = 'dibsserver';
+var decoder           = new StringDecoder('utf8'); //Client send UTF8 buffer which this is used to decode
+var app               = express();
+var expressWs         = require('express-ws')(app);
 
-    //  Scope.
-    var self = this;
+console.log("ip: " + server_ip_address + ":" + server_port);
+console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
+console.log("mysql_user: " + mysql_user);
+console.log("mysql_database_name: " + mysql_database);
 
+var mysqlConnection = mysql.createConnection({ //connect to mysql database
+  host     : mysql_host,
+  user     : mysql_user,
+  password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD || "password",
+  port	   : mysql_port,
+  database : mysql_database
+});
 
-    /*  ================================================================  */
-    /*  Helper functions.                                                 */
-    /*  ================================================================  */
+module.exports = genUuid;
 
-    /**
-     *  Set up server IP address and port # using env variables/defaults.
-     */
-    self.setupVariables = function() {
-        //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+function genUuid(callback) {
+  if (typeof(callback) !== 'function') {
+    return uuidFromBytes(crypto.randomBytes(16));
+  }
 
-        if (typeof self.ipaddress === "undefined") {
-            //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-            //  allows us to run/test the app locally.
-            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
-        };
-    };
+  crypto.randomBytes(16, function(err, rnd) {
+    if (err) return callback(err);
+    callback(null, uuidFromBytes(rnd));
+  });
+}
 
+function uuidFromBytes(rnd) {
+  rnd[6] = (rnd[6] & 0x0f) | 0x40;
+  rnd[8] = (rnd[8] & 0x3f) | 0x80;
+  rnd = rnd.toString('hex').match(/(.{8})(.{4})(.{4})(.{4})(.{12})/);
+  rnd.shift();
+  return rnd.join('-');
+}
 
-    /**
-     *  Populate the cache.
-     */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
+app.use(session({
+	maxAge: null,
+	secure: false,
+	resave: false,
+	saveUninitialized: false,
+	genid: function(req) {
+		return genuuid()
+	},
+	secret: 'keyboard cat'
+}))
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
+app.use(function (req, res, next) {
+	console.log("req: " + req);
+	console.log("res: " + res)
+	console.log("next: " + next);
+	console.log('middleware');
+	req.testing = 'testing';
+	return next();
+});
+ 
+app.get('/', function(request, response, next){
+  console.log('get route', req.testing);
+  res.end();
+});
 
+app.ws('/', function (ws, req) {
+	console.log("connection");
 
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    self.cache_get = function(key) { return self.zcache[key]; };
+	ws.on('message', function (textChunk) {
+		var message = decoder.write(textChunk);
+		var json = JSON.parse(message);
+		console.log(message);
+		console.log(json["event"]);
+		
+		if (json["event"] == "login") {
+			loginEvent(json, ws);
+		} else if (json["event"] == "register") {
+			registerEvent(json, ws);
+		} else if (json["event"] == "getProfile") {
+			getProfileEvent(json, ws);
+		} else if (json["event"] == "setProfile") {
+			setProfileEvent(json, ws);
+		}
+	});
+});
 
+app.listen(server_port, server_ip_address);
 
-    /**
-     *  terminator === the termination handler
-     *  Terminate server on receipt of the specified signal.
-     *  @param {string} sig  Signal to terminate on.
-     */
-    self.terminator = function(sig){
-        if (typeof sig === "string") {
-           console.log('%s: Received %s - terminating sample app ...',
-                       Date(Date.now()), sig);
-           process.exit(1);
-        }
-        console.log('%s: Node server stopped.', Date(Date.now()) );
-    };
+function loginEvent(json, ws) {
+	try {
+		console.log("query: " + 'SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json["email"]));
+		mysqlConnection.query('SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json["email"]), function (err, rows, fields) {
+			if (err) throw err;
+			if (rows.length !== 0) {
+				if (bcrypt.compareSync(json["password"], decoder.write(rows[0].password))) {
+					var jsonReply = {
+						email: json["email"]
+					}
+					ws.send(JSON.stringify(jsonReply));
+				} else {
+					var jsonReply = {
+						error: "wrong password"
+					}
+					ws.send(JSON.stringify(jsonReply));
+				}
+			} else {
+				var jsonReply = {
+						error: "wrong email"
+					}
+				ws.send(JSON.stringify(jsonReply));
+			}});	
+	} catch(err) {
+		var jsonReply = {
+				error: "server error"
+			}
+		ws.send(JSON.stringify(jsonReply));
+		console.log(err);
+	}
+}
 
+function registerEvent(json, ws) {
+	try {
+		var salt = bcrypt.genSaltSync(10);
+		console.log('SELECT 1 FROM user WHERE email = ' + mysqlConnection.escape(json["email"]));
+		mysqlConnection.query('SELECT 1 FROM user WHERE email= ' + mysqlConnection.escape(json["email"]), function (err, fields, rows) {
+			if (err) throw err;
+			if (fields.length === 0){ //User with this email doesn't exist
+				console.log('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json["email"]) + ', ' + mysqlConnection.escape(json["nickname"]) + ', "' + bcrypt.hashSync(json["password"], salt) + '"');
+				mysqlConnection.query('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json["email"]) + ', ' + mysqlConnection.escape(json["nickname"]) + ', "' + bcrypt.hashSync(json["password"], salt) + '")', function(err, result) {
+					if (err) {
+						var jsonReply = {
+							error: "server error"
+						}
+						ws.send(JSON.stringify(jsonReply));
+						throw err;
+					} else {
+						var jsonReply = {
+							email: json["email"]
+						}
+						ws.send(JSON.stringify(jsonReply));
+					}
+				});
+			} else {
+				var jsonReply = {
+						error: "email taken"
+					}
+				ws.send(JSON.stringify(jsonReply));
+			}
+		});
+		
+	} catch(err) {
+		var jsonReply = {
+				error: "server error"
+			}
+		ws.send(JSON.stringify(jsonReply));
+		console.log(err);
+	}
+}
 
-    /**
-     *  Setup termination handlers (for exit and a list of signals).
-     */
-    self.setupTerminationHandlers = function(){
-        //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(); });
+function getProfileEvent(json, ws) {
+	try {
+		console.log('SELECT * FROM card WHERE User_email = ' + mysqlConnection.escape(json["User_email"]));
+		mysqlConnection.query('SELECT * FROM card WHERE User_email = ' + mysqlConnection.escape(json["User_email"]), function (err, rows, fields)  
+		{
+			if (err) {throw err;}
+			
+			if (fields.length !== 0)  //Profile with given email exists
+			{ 
+				var jsonReply = {
+					cardname: rows[0].cardname,
+					Picture: rows[0].Picture,
+					Stats: rows[0].Stats,
+					User_email: rows[0].User_email,
+				}
+			//	var jsonString = '{"cardname": ' + '"' + rows[0].cardname + '"' + ', "Picture": ' + '"' + rows[0].Picture + '"' + ', "Stats": ' + '"' + rows[0].Stats + '"' + ', "User_email": ' + '"' + rows[0].User_email + '}';
+				console.log(JSON.stringify(jsonReply));
+				ws.send(JSON.stringify(jsonReply));
+			
+			} else { //Profile with given email doesn't exist
+				var jsonReply = {
+					error: "no profile"
+					}
+				ws.send(JSON.stringify(jsonReply));
+			}
+		});
+	
+	} catch(err) {
+		var jsonReply = {
+				error: "server error"
+			}
+		ws.send(JSON.stringify(jsonReply));
+		console.log(err);
+	}
+}
 
-        // Removed 'SIGPIPE' from the list - bugz 852598.
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function(element, index, array) {
-            process.on(element, function() { self.terminator(element); });
-        });
-    };
-
-
-    /*  ================================================================  */
-    /*  App server functions (main app logic here).                       */
-    /*  ================================================================  */
-
-    /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-    };
-
-
-    /**
-     *  Initialize the server (express) and create the routes and register
-     *  the handlers.
-     */
-    self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
-
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
-    };
-
-
-    /**
-     *  Initializes the sample application.
-     */
-    self.initialize = function() {
-        self.setupVariables();
-        self.populateCache();
-        self.setupTerminationHandlers();
-
-        // Create the express server and routes.
-        self.initializeServer();
-    };
-
-
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                        Date(Date.now() ), self.ipaddress, self.port);
-        });
-    };
-
-};   /*  Sample Application.  */
-
-
-
-/**
- *  main():  Main code.
- */
-var zapp = new SampleApp();
-zapp.initialize();
-zapp.start();
+function setProfileEvent(json, ws) {
+	try {
+		console.log('INSERT INTO card (cardname, Picture, Stats, User_email) VALUES (' + mysqlConnection.escape(json["cardname"]) + ', ' + mysqlConnection.escape(json["Picture"]) + ', ' + mysqlConnection.escape(json["Stats"]) +', ' + mysqlConnection.escape(json["User_email"]) + ')');
+		mysqlConnection.query('INSERT INTO card (cardname, Picture, Stats, User_email) VALUES (' + mysqlConnection.escape(json["cardname"]) + ', ' + mysqlConnection.escape(json["Picture"]) + ', ' + mysqlConnection.escape(json["Stats"]) +', ' + mysqlConnection.escape(json["User_email"]) + ')', function(err, result) 
+		{
+			if (err) {
+				var jsonReply = {
+					error: "false"
+					}
+				ws.send(JSON.stringify(jsonReply));
+				throw err;
+			} else {
+				var jsonReply = {
+					error: "true"
+					}
+				ws.send(JSON.stringify(jsonReply));
+			}
+		});
+	} 
+	catch(err) {
+		var jsonReply = {
+				error: "server error"
+			}
+		ws.send(JSON.stringify(jsonReply));
+		console.log(err);
+	}
+}
 
