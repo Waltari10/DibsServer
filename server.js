@@ -63,9 +63,6 @@ app.use(session({
 }))
 
 app.use(function (req, res, next) {
-	console.log("req: " + req);
-	console.log("res: " + res)
-	console.log("next: " + next);
 	console.log('middleware');
 	req.testing = 'testing';
 	return next();
@@ -172,8 +169,8 @@ function registerEvent(json, ws) {
 
 function getProfileEvent(json, ws) {
 	try {
-		console.log('SELECT * FROM card WHERE User_email = ' + mysqlConnection.escape(json["User_email"]));
-		mysqlConnection.query('SELECT * FROM card WHERE User_email = ' + mysqlConnection.escape(json["User_email"]), function (err, rows, fields)  
+		console.log('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json["email"]));
+		mysqlConnection.query('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json["email"]), function (err, rows, fields)  
 		{
 			if (err) {throw err;}
 			
@@ -181,11 +178,11 @@ function getProfileEvent(json, ws) {
 			{ 
 				var jsonReply = {
 					cardname: rows[0].cardname,
-					Picture: rows[0].Picture,
-					Stats: rows[0].Stats,
-					User_email: rows[0].User_email,
+					picture: rows[0].picture,
+					stats: rows[0].stats,
+					email: rows[0].email,
 				}
-			//	var jsonString = '{"cardname": ' + '"' + rows[0].cardname + '"' + ', "Picture": ' + '"' + rows[0].Picture + '"' + ', "Stats": ' + '"' + rows[0].Stats + '"' + ', "User_email": ' + '"' + rows[0].User_email + '}';
+			//	var jsonString = '{"cardname": ' + '"' + rows[0].cardname + '"' + ', "picture": ' + '"' + rows[0].picture + '"' + ', "stats": ' + '"' + rows[0].stats + '"' + ', "email": ' + '"' + rows[0].email + '}';
 				console.log(JSON.stringify(jsonReply));
 				ws.send(JSON.stringify(jsonReply));
 			
@@ -208,8 +205,8 @@ function getProfileEvent(json, ws) {
 
 function setProfileEvent(json, ws) {
 	try {
-		console.log('INSERT INTO card (cardname, Picture, Stats, User_email) VALUES (' + mysqlConnection.escape(json["cardname"]) + ', ' + mysqlConnection.escape(json["Picture"]) + ', ' + mysqlConnection.escape(json["Stats"]) +', ' + mysqlConnection.escape(json["User_email"]) + ')');
-		mysqlConnection.query('INSERT INTO card (cardname, Picture, Stats, User_email) VALUES (' + mysqlConnection.escape(json["cardname"]) + ', ' + mysqlConnection.escape(json["Picture"]) + ', ' + mysqlConnection.escape(json["Stats"]) +', ' + mysqlConnection.escape(json["User_email"]) + ')', function(err, result) 
+		console.log('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json["cardname"]) + ', ' + mysqlConnection.escape(json["picture"]) + ', ' + mysqlConnection.escape(json["stats"]) +', ' + mysqlConnection.escape(json["email"]) + ')');
+		mysqlConnection.query('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json["cardname"]) + ', ' + mysqlConnection.escape(json["picture"]) + ', ' + mysqlConnection.escape(json["stats"]) +', ' + mysqlConnection.escape(json["email"]) + ')', function(err, result) 
 		{
 			if (err) {
 				var jsonReply = {
