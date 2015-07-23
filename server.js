@@ -57,7 +57,7 @@ app.use(session({
 	resave: false,
 	saveUninitialized: false,
 	genid: function(req) {
-		return genuuid()
+		return genUuid()
 	},
 	secret: 'keyboard cat'
 }))
