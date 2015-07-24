@@ -97,6 +97,8 @@ function logoutEvent(json, ws, req) {
 	console.log("req.session.destroy: " + req.session.destroy);
 	var jsonReply;
 	try {
+		console.log("req.session: " + req.session);
+		console.log("req.session.destroy: " + req.session.destroy);
 		req.session.destroy(function(err) {
                      console.log(err);
                 });
