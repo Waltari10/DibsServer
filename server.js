@@ -69,6 +69,7 @@ app.use(function (req, res, next) {
 	var session = req.session;
 	console.log("session: " + JSON.stringify(session));
 	console.log("req non json: " + req);
+	console.log('req:', req);
 	console.log("req: " + JSON.stringify(req));
 	
 	/*var cookie = req.cookies.cokkieName;
