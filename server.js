@@ -66,10 +66,10 @@ app.use(session({
 
 app.use(function (req, res, next) {
 	console.log('middleware');
-	var jsonReply = {
-		event: "ping"
-	};
-	req.send(JSON.stringify(jsonReply));
+	//var jsonReply = {
+	//	event: "ping"
+	//};
+	//req.send(JSON.stringify(jsonReply));
 	//req.testing = 'testing';
 	return next();
 });
