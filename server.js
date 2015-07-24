@@ -6,7 +6,6 @@ var StringDecoder		= require('string_decoder').StringDecoder,  //Package for dec
 	express				= require('express'),
 	session				= require('express-session'),
 	crypto				= require('crypto'),
-	
 	server_port			= process.env.OPENSHIFT_NODEJS_PORT || 8080,
 	server_ip_address	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
 	mysql_port			= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080,
@@ -54,6 +53,7 @@ function uuidFromBytes(rnd) {
 }
 
 app.use(session({
+	cookie: { secure: false, maxAge: null },  //True requires ssl
 	maxAge: null,
 	secure: false,
 	resave: false,
@@ -65,12 +65,21 @@ app.use(session({
 }));
 
 app.use(function (req, res, next) {
-	console.log('middleware');
-	//var jsonReply = {
-	//	event: "ping"
-	//};
-	//req.send(JSON.stringify(jsonReply));
-	//req.testing = 'testing';
+	var cookie = req.cookies.cokkieName;
+	if (cookie === undefined)
+	{
+		// no: set a new cookie
+		var randomNumber=Math.random().toString();
+		randomNumber=randomNumber.substring(2,randomNumber.length);
+		res.cookie('cokkieName',randomNumber, { maxAge: 900000, httpOnly: true });
+		console.log('cookie have created successfully');
+	} 
+	else
+	{
+		// yes, cookie was already present 
+		console.log('cookie exists', cookie);
+	} 
+  
 	return next();
 });
 
