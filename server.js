@@ -58,38 +58,27 @@ app.use(session({
 	secure: false,
 	resave: false,
 	saveUninitialized: false,
-	//genid: function (req) {
-	//	return genUuid();
-	//},
+	genid: function (req) {
+		return genUuid();
+	},
 	secret: 'keyboard cat'
 }));
 
 app.use(function (req, res, next) {
 	console.log("middleware");
 	var session = req.session;
-	console.log("session: " + JSON.stringify(session));
-	console.log('req:', req);
+	console.log('req: ', req);
+	console.log('res: ', res);
 	console.log('req.sessionID', req.sessionID);
-	
-	/*var cookie = req.cookies.cokkieName;
-	if (cookie === undefined)
-	{
-		// no: set a new cookie
-		var randomNumber=Math.random().toString();
-		randomNumber=randomNumber.substring(2,randomNumber.length);
-		res.cookie('cokkieName',randomNumber, { maxAge: 900000, httpOnly: true });
-		console.log('cookie have created successfully');
-	} 
-	else
-	{
-		// yes, cookie was already present 
-		console.log('cookie exists', cookie);
-	} */
-  
 	return next();
 });
 
+
+
 app.ws('/', function (ws, req) {
+	console.log("ws: ", ws);
+	console.log("req: ", req);
+	
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
@@ -102,11 +91,31 @@ app.ws('/', function (ws, req) {
 			getProfileEvent(json, ws);
 		} else if (json.event === "setProfile") {
 			setProfileEvent(json, ws);
+		} else if (json.event === "logout") {
+			logoutEvent(json, ws);
 		}
 	});
 });
 
 app.listen(server_port, server_ip_address);
+
+function logoutEvent(json, ws) {
+	var jsonReply;
+	try {
+		ws.session.destroy();
+		jsonReply = {
+				event: "logout"
+			};
+		ws.send(JSON.stringify(jsonReply));
+	} catch (err) {
+		jsonReply = {
+				event: "logout",
+				error: "server error"
+			};
+		ws.send(JSON.stringify(jsonReply));
+		console.log(err);
+	}
+}
 
 function loginEvent(json, ws) {
 	var jsonReply;
