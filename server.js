@@ -66,7 +66,10 @@ app.use(session({
 
 app.use(function (req, res, next) {
 	console.log("middleware");
-	var cookie = req.cookies.cokkieName;
+	var session = req.session;
+	console.log("session: " + session);
+	
+	/*var cookie = req.cookies.cokkieName;
 	if (cookie === undefined)
 	{
 		// no: set a new cookie
@@ -79,13 +82,12 @@ app.use(function (req, res, next) {
 	{
 		// yes, cookie was already present 
 		console.log('cookie exists', cookie);
-	} 
+	} */
   
 	return next();
 });
 
 app.ws('/', function (ws, req) {
-	console.log("connection");
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
