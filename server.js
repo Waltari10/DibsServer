@@ -68,9 +68,8 @@ app.use(function (req, res, next) {
 	console.log("middleware");
 	var session = req.session;
 	console.log("session: " + JSON.stringify(session));
-	console.log("req: " + req);
 	console.log('req:', req);
-	console.log("req: " + JSON.stringify(req));
+	console.log('req.sessionID', req.sessionID);
 	
 	/*var cookie = req.cookies.cokkieName;
 	if (cookie === undefined)
