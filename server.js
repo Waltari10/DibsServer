@@ -85,7 +85,6 @@ app.ws('/', function (ws, req) {
 		} else if (json.event === "setProfile") {
 			setProfileEvent(json, ws);
 		} else if (json.event === "logout") {
-			console.log(ws.session);
 			logoutEvent(json, ws, req);
 		}
 	});
@@ -96,7 +95,9 @@ app.listen(server_port, server_ip_address);
 function logoutEvent(json, ws, req) {
 	var jsonReply;
 	try {
-		req.session.destroy();
+		req.session.destroy(function(err) {
+                     console.log(err);
+                });
 		jsonReply = {
 				event: "logout"
 			};
