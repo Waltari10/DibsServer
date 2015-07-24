@@ -66,7 +66,11 @@ app.use(session({
 
 app.use(function (req, res, next) {
 	console.log('middleware');
-	req.testing = 'testing';
+	var jsonReply = {
+		event: "ping"
+	};
+	req.send(JSON.stringify(jsonReply));
+	//req.testing = 'testing';
 	return next();
 });
 
@@ -101,17 +105,20 @@ function loginEvent(json, ws) {
 				
 				if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
 					jsonReply = {
+						event: "login",
 						email: json.email
 					};
 					ws.send(JSON.stringify(jsonReply));
 				} else {
 					jsonReply = {
+						event: "login",
 						error: "wrong password"
 					};
 					ws.send(JSON.stringify(jsonReply));
 				}
 			} else {
 				jsonReply = {
+						event: "login",
 						error: "wrong email"
 					};
 				ws.send(JSON.stringify(jsonReply));
@@ -119,6 +126,7 @@ function loginEvent(json, ws) {
 		});
 	} catch (err) {
 		jsonReply = {
+				event: "login",
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
@@ -140,12 +148,14 @@ function registerEvent(json, ws) {
 				mysqlConnection.query('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '")', function (err, result) {
 					if (err) {
 						jsonReply = {
+							event: "register",
 							error: "server error"
 						};
 						ws.send(JSON.stringify(jsonReply));
 						throw err;
 					} else {
 						jsonReply = {
+							event: "register",
 							email: json.email
 						};
 						ws.send(JSON.stringify(jsonReply));
@@ -153,6 +163,7 @@ function registerEvent(json, ws) {
 				});
 			} else {
 				jsonReply = {
+						event: "register",
 						error: "email taken"
 					};
 				ws.send(JSON.stringify(jsonReply));
@@ -161,6 +172,7 @@ function registerEvent(json, ws) {
 
 	} catch (err) {
 		var jsonReply = {
+				event: "register",
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
@@ -179,6 +191,7 @@ function getProfileEvent(json, ws) {
 			
 			if (fields.length !== 0) {
 				jsonReply = {
+					event: "getProfile",
 					cardname: rows[0].cardname,
 					picture: rows[0].picture,
 					stats: rows[0].stats,
@@ -188,6 +201,7 @@ function getProfileEvent(json, ws) {
 				ws.send(JSON.stringify(jsonReply));
 			} else { //Profile with given email doesn't exist
 				jsonReply = {
+					event: "getProfile",
 					error: "no profile"
 				};
 				ws.send(JSON.stringify(jsonReply));
@@ -195,6 +209,7 @@ function getProfileEvent(json, ws) {
 		});
 	} catch (err) {
 		jsonReply = {
+				event: "getProfile",
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
@@ -209,12 +224,14 @@ function setProfileEvent(json, ws) {
 		mysqlConnection.query('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ')', function (err, result) {
 			if (err) {
 				jsonReply = {
+					event: "setProfile",
 					error: "false"
 				};
 				ws.send(JSON.stringify(jsonReply));
 				throw err;
 			} else {
 				jsonReply = {
+					event: "setProfile",
 					error: "true"
 				};
 				ws.send(JSON.stringify(jsonReply));
@@ -222,6 +239,7 @@ function setProfileEvent(json, ws) {
 		});
 	} catch (err) {
 		jsonReply = {
+				event: "setProfile",
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
