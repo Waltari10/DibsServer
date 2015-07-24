@@ -1,21 +1,21 @@
 "use strict";
 
-var StringDecoder		= require('string_decoder').StringDecoder; //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
-var bcrypt				= require('bcrypt');
-var mysql				= require('mysql');
-var express				= require('express');
-var session				= require('express-session');
-var crypto				= require('crypto');
-
-var server_port			= process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var server_ip_address	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-var mysql_port			= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080;
-var mysql_host			= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1';
-var mysql_user			= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
-var mysql_database		= 'dibsserver';
-var decoder				= new StringDecoder('utf8'); //Client send UTF8 buffer which this is used to decode
-var app					= express();
-var expressWs			= require('express-ws')(app);
+var StringDecoder		= require('string_decoder').StringDecoder,  //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
+	bcrypt				= require('bcrypt'),
+	mysql				= require('mysql'),
+	express				= require('express'),
+	session				= require('express-session'),
+	crypto				= require('crypto'),
+	
+	server_port			= process.env.OPENSHIFT_NODEJS_PORT || 8080,
+	server_ip_address	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
+	mysql_port			= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080,
+	mysql_host			= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1',
+	mysql_user			= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root',
+	mysql_database		= 'dibsserver',
+	decoder				= new StringDecoder('utf8'), //Client send UTF8 buffer which this is used to decode
+	app					= express(),
+	expressWs			= require('express-ws')(app);
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
