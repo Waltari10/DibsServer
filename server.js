@@ -56,8 +56,8 @@ app.use(session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
 	maxAge: null,
 	secure: false,
-	resave: false,
-	saveUninitialized: false,
+	resave: true,
+	saveUninitialized: true,
 	genid: function (req) {
 		return genUuid();
 	},
