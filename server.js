@@ -72,8 +72,6 @@ app.use(function (req, res, next) {
 
 
 app.ws('/', function (ws, req) {
-	console.log("req.session: ", req.session);
-	console.log("ws.session: ", ws.session);
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
@@ -88,19 +86,17 @@ app.ws('/', function (ws, req) {
 			setProfileEvent(json, ws);
 		} else if (json.event === "logout") {
 			console.log(ws.session);
-			logoutEvent(json, ws);
+			logoutEvent(json, ws, req);
 		}
 	});
 });
 
 app.listen(server_port, server_ip_address);
 
-function logoutEvent(json, ws) {
+function logoutEvent(json, ws, req) {
 	var jsonReply;
-	//console.log(ws);
-	console.log(ws.session);
 	try {
-		ws.session.destroy();
+		req.session.destroy();
 		jsonReply = {
 				event: "logout"
 			};
