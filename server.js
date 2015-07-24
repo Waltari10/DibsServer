@@ -1,7 +1,7 @@
 "use strict";
 
 var StringDecoder		= require('string_decoder').StringDecoder; //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
-var bcryp				= require('bcrypt');
+var bcrypt				= require('bcrypt');
 var mysql				= require('mysql');
 var express				= require('express');
 var session				= require('express-session');
