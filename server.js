@@ -92,7 +92,7 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function logoutEvent(json, ws, req) {´
+function logoutEvent(json, ws, req) {
 	var jsonReply;
 	try {
 		req.session.destroy(function(err) {
