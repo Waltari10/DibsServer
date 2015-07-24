@@ -65,6 +65,7 @@ app.use(session({
 }));
 
 app.use(function (req, res, next) {
+	console.log("middleware");
 	var cookie = req.cookies.cokkieName;
 	if (cookie === undefined)
 	{
@@ -84,6 +85,7 @@ app.use(function (req, res, next) {
 });
 
 app.ws('/', function (ws, req) {
+	console.log("connection");
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
