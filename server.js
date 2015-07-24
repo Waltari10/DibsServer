@@ -58,9 +58,9 @@ app.use(session({
 	secure: false,
 	resave: false,
 	saveUninitialized: false,
-	genid: function (req) {
-		return genUuid();
-	},
+	//genid: function (req) {
+	//	return genUuid();
+	//},
 	secret: 'keyboard cat'
 }));
 
@@ -68,7 +68,7 @@ app.use(function (req, res, next) {
 	console.log("middleware");
 	var session = req.session;
 	console.log("session: " + JSON.stringify(session));
-	console.log("req non json: " + req);
+	console.log("req: " + req);
 	console.log('req:', req);
 	console.log("req: " + JSON.stringify(req));
 	
