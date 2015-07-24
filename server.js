@@ -66,10 +66,10 @@ app.use(session({
 
 app.use(function (req, res, next) {
 	console.log("middleware");
-	var session = req.session;
-	console.log('req: ', req);
-	console.log('res: ', res);
-	console.log('req.sessionID', req.sessionID);
+	//var session = req.session;
+	//console.log('req: ', req);
+//	console.log('res: ', res);
+	//console.log('req.sessionID', req.sessionID);
 	return next();
 });
 
@@ -92,6 +92,7 @@ app.ws('/', function (ws, req) {
 		} else if (json.event === "setProfile") {
 			setProfileEvent(json, ws);
 		} else if (json.event === "logout") {
+			console.log(ws,session);
 			logoutEvent(json, ws);
 		}
 	});
@@ -101,6 +102,8 @@ app.listen(server_port, server_ip_address);
 
 function logoutEvent(json, ws) {
 	var jsonReply;
+	console.log(ws);
+	console.log(ws.session);
 	try {
 		ws.session.destroy();
 		jsonReply = {
