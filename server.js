@@ -56,8 +56,8 @@ app.use(session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
 	maxAge: null,
 	secure: false,
-	resave: true,
-	saveUninitialized: true,
+	resave: false,
+	saveUninitialized: false,
 	genid: function (req) {
 		return genUuid();
 	},
@@ -92,15 +92,13 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function logoutEvent(json, ws, req) {
-	console.log("req.session: " + req.session);
-	console.log("req.session.destroy: " + req.session.destroy);
+function logoutEvent(json, ws, req) {´
 	var jsonReply;
 	try {
-		console.log("req.session: " + req.session);
-		console.log("req.session.destroy: " + req.session.destroy);
 		req.session.destroy(function(err) {
-                     console.log(err);
+			if (err) {
+				throw err;
+			}
                 });
 		jsonReply = {
 				event: "logout"
