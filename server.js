@@ -72,7 +72,8 @@ app.use(function (req, res, next) {
 
 
 app.ws('/', function (ws, req) {
-	
+	console.log("req.session: ", req.session);
+	console.log("ws.session: ", ws.session);
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
