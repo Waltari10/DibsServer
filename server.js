@@ -90,6 +90,7 @@ app.ws('/', function (ws, req) {
 app.listen(server_port, server_ip_address);
 
 function loginEvent(json, ws) {
+	var jsonReply;
 	try {
 		console.log("query: " + 'SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json.email));
 		mysqlConnection.query('SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json.email), function (err, rows, fields) {
@@ -97,26 +98,27 @@ function loginEvent(json, ws) {
 				throw err;
 			}
 			if (rows.length !== 0) {
+				
 				if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
-					var jsonReply = {
+					jsonReply = {
 						email: json.email
 					};
 					ws.send(JSON.stringify(jsonReply));
 				} else {
-					var jsonReply = {
+					jsonReply = {
 						error: "wrong password"
 					};
 					ws.send(JSON.stringify(jsonReply));
 				}
 			} else {
-				var jsonReply = {
+				jsonReply = {
 						error: "wrong email"
 					};
 				ws.send(JSON.stringify(jsonReply));
 			}
 		});
 	} catch (err) {
-		var jsonReply = {
+		jsonReply = {
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
@@ -125,6 +127,7 @@ function loginEvent(json, ws) {
 }
 
 function registerEvent(json, ws) {
+	var jsonReply;
 	try {
 		var salt = bcrypt.genSaltSync(10);
 		console.log('SELECT 1 FROM user WHERE email = ' + mysqlConnection.escape(json.email));
@@ -136,20 +139,20 @@ function registerEvent(json, ws) {
 				console.log('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '"');
 				mysqlConnection.query('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '")', function (err, result) {
 					if (err) {
-						var jsonReply = {
+						jsonReply = {
 							error: "server error"
 						};
 						ws.send(JSON.stringify(jsonReply));
 						throw err;
 					} else {
-						var jsonReply = {
+						jsonReply = {
 							email: json.email
 						};
 						ws.send(JSON.stringify(jsonReply));
 					}
 				});
 			} else {
-				var jsonReply = {
+				jsonReply = {
 						error: "email taken"
 					};
 				ws.send(JSON.stringify(jsonReply));
@@ -166,14 +169,16 @@ function registerEvent(json, ws) {
 }
 
 function getProfileEvent(json, ws) {
+	var jsonReply;
 	try {
 		console.log('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email));
 		mysqlConnection.query('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email), function (err, rows, fields) {
 			if (err) {
 				throw err;
 			}
+			
 			if (fields.length !== 0) {
-				var jsonReply = {
+				jsonReply = {
 					cardname: rows[0].cardname,
 					picture: rows[0].picture,
 					stats: rows[0].stats,
@@ -182,14 +187,14 @@ function getProfileEvent(json, ws) {
 				console.log(JSON.stringify(jsonReply));
 				ws.send(JSON.stringify(jsonReply));
 			} else { //Profile with given email doesn't exist
-				var jsonReply = {
+				jsonReply = {
 					error: "no profile"
 				};
 				ws.send(JSON.stringify(jsonReply));
 			}
 		});
 	} catch (err) {
-		var jsonReply = {
+		jsonReply = {
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
@@ -198,28 +203,28 @@ function getProfileEvent(json, ws) {
 }
 
 function setProfileEvent(json, ws) {
+	var jsonReply;
 	try {
 		console.log('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ')');
 		mysqlConnection.query('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ')', function (err, result) {
 			if (err) {
-				var jsonReply = {
+				jsonReply = {
 					error: "false"
 				};
 				ws.send(JSON.stringify(jsonReply));
 				throw err;
 			} else {
-				var jsonReply = {
+				jsonReply = {
 					error: "true"
 				};
 				ws.send(JSON.stringify(jsonReply));
 			}
 		});
 	} catch (err) {
-		var jsonReply = {
+		jsonReply = {
 				error: "server error"
 			};
 		ws.send(JSON.stringify(jsonReply));
 		console.log(err);
 	}
 }
-
