@@ -86,11 +86,31 @@ app.ws('/', function (ws, req) {
 			setProfileEvent(json, ws);
 		} else if (json.event === "logout") {
 			logoutEvent(json, ws, req);
+		} else if (json.event === "ping") {
+			pingEvent(json, ws);
 		}
 	});
 });
 
 app.listen(server_port, server_ip_address);
+
+function pingEvent(json, ws) {
+	console.log("ping event");
+	var jsonReply;
+	try {
+		jsonReply = {
+				event: "pong"
+			};
+		ws.send(JSON.stringify(jsonReply));
+	} catch (err) {
+		jsonReply = {
+				event: "error",
+				error: "server error on pong"
+			};
+		ws.send(JSON.stringify(jsonReply));
+		console.log(err);
+	}
+}
 
 function logoutEvent(json, ws, req) {
 	var jsonReply;
@@ -106,8 +126,8 @@ function logoutEvent(json, ws, req) {
 		ws.send(JSON.stringify(jsonReply));
 	} catch (err) {
 		jsonReply = {
-				event: "logout",
-				error: "server error"
+				event: "error",
+				error: "server error on logout"
 			};
 		ws.send(JSON.stringify(jsonReply));
 		console.log(err);
@@ -222,16 +242,16 @@ function getProfileEvent(json, ws) {
 				ws.send(JSON.stringify(jsonReply));
 			} else { //Profile with given email doesn't exist
 				jsonReply = {
-					event: "getProfile",
-					error: "no profile"
+					event: "error",
+					error: "no profile on getProfile"
 				};
 				ws.send(JSON.stringify(jsonReply));
 			}
 		});
 	} catch (err) {
 		jsonReply = {
-				event: "getProfile",
-				error: "server error"
+				event: "error",
+				error: "server error on getProfile"
 			};
 		ws.send(JSON.stringify(jsonReply));
 		console.log(err);
@@ -245,8 +265,8 @@ function setProfileEvent(json, ws) {
 		mysqlConnection.query('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ')', function (err, result) {
 			if (err) {
 				jsonReply = {
-					event: "setProfile",
-					error: "false"
+					event: "error",
+					error: "server error on setProfile SQL"
 				};
 				ws.send(JSON.stringify(jsonReply));
 				throw err;
@@ -260,8 +280,8 @@ function setProfileEvent(json, ws) {
 		});
 	} catch (err) {
 		jsonReply = {
-				event: "setProfile",
-				error: "server error"
+				event: "error",
+				error: "server error on setProfile"
 			};
 		ws.send(JSON.stringify(jsonReply));
 		console.log(err);
