@@ -160,7 +160,7 @@ function logoutEvent(json, ws, req) {
 	}
 }
 
-function rememberSession(email, sessionid) {
+function rememberSession(ws, email, sessionid) {
 	var jsonReply;
 	console.log('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email));
 	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email), function (err, rows, fields)  {
@@ -188,7 +188,7 @@ function loginEvent(json, ws, req) {
 			if (rows.length !== 0) {
 				if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
 					
-					var sessionsaved = rememberSession(mysqlConnection.escape(json.email), req.sessionID);
+					rememberSession(ws, mysqlConnection.escape(json.email), req.sessionID);
 					jsonReply = {
 						event: "login",
 						email: json.email,
@@ -240,6 +240,7 @@ function registerEvent(json, ws, req) {
 						ws.send(JSON.stringify(jsonReply));
 						throw err;
 					} else {
+						rememberSession(ws, mysqlConnection.escape(json.email), req.sessionID);
 						jsonReply = {
 							event: "register",
 							email: json.email,
