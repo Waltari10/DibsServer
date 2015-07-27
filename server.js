@@ -66,7 +66,7 @@ app.use(session({
 
 app.use(function (req, res, next) {
 	console.log("middleware");
-	console.log(req.sessoinID);
+	console.log(req.sessionID);
 	
 	
 	return next();
@@ -161,11 +161,11 @@ function logoutEvent(json, ws, req) {
 }
 
 function rememberSession(email, sessionid) {
+	var jsonReply;
 	console.log('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email));
 	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email), function (err, rows, fields)  {
 		if (err) {
-			jsonReply = 
-			{
+			jsonReply = {
 				event: "login",
 				error: "session save server error"
 			};
