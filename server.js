@@ -162,8 +162,8 @@ function logoutEvent(json, ws, req) {
 
 function rememberSession(ws, email, sessionid) {
 	var jsonReply;
-	console.log('INSERT INTO session (sessionid, email) VALUES '  + ''' + sessionid + '', ' + mysqlConnection.escape(email));
-	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email), function (err, rows, fields)  {
+	console.log('INSERT INTO session (sessionid, email) VALUES ('  + '"' + sessionid + '", ' + mysqlConnection.escape(email) + ')');
+	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES ()'  + '"' + sessionid + '", ' + mysqlConnection.escape(email) + ')', function (err, rows, fields)  {
 		if (err) {
 			jsonReply = {
 				event: "login",
@@ -230,7 +230,7 @@ function registerEvent(json, ws, req) {
 				throw err;
 			}
 			if (fields.length === 0) { //user with this email doesn't exist
-				console.log('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '"');
+				console.log('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '")');
 				mysqlConnection.query('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '")', function (err, result) {
 					if (err) {
 						jsonReply = {
