@@ -66,6 +66,9 @@ app.use(session({
 
 app.use(function (req, res, next) {
 	console.log("middleware");
+	console.log(req.sessoinID);
+	
+	
 	return next();
 });
 
@@ -77,9 +80,9 @@ app.ws('/', function (ws, req) {
 		console.log(message);
 		console.log(json.event);
 		if (json.event === "login") {
-			loginEvent(json, ws);
+			loginEvent(json, ws, req);
 		} else if (json.event === "register") {
-			registerEvent(json, ws);
+			registerEvent(json, ws, req);
 		} else if (json.event === "getProfile") {
 			getProfileEvent(json, ws);
 		} else if (json.event === "setProfile") {
@@ -88,11 +91,34 @@ app.ws('/', function (ws, req) {
 			logoutEvent(json, ws, req);
 		} else if (json.event === "ping") {
 			pingEvent(json, ws);
+		} else if (json.event === "restoresession") {
+			restoreSessionEvent(json, ws, req.sessionID);
 		}
 	});
 });
 
 app.listen(server_port, server_ip_address);
+
+function restoreSessionEvent(json, ws) {
+	mysqlConnection.query('SELECT * FROM session WHERE sessoinid = ' + mysqlConnection.escape(json.sessionid), function (err, rows, fields) {
+			if (err) {
+				throw err;
+			}
+			if (rows.length !== 0) {
+					jsonReply = {
+						event: "restoresession",
+						enter: true
+					};
+					ws.send(JSON.stringify(jsonReply));
+			} else {
+				jsonReply = {
+						event: "restoreSession",
+						error: "sessionid not found"
+					};
+				ws.send(JSON.stringify(jsonReply));
+			}
+		});
+}
 
 function pingEvent(json, ws) {
 	console.log("ping event");
@@ -134,7 +160,24 @@ function logoutEvent(json, ws, req) {
 	}
 }
 
-function loginEvent(json, ws) {
+function rememberSession(email, sessionid) {
+	console.log('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email));
+	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES '  + "'" + sessionid + "', " + mysqlConnection.escape(email), function (err, rows, fields)  {
+		if (err) {
+			jsonReply = 
+			{
+				event: "login",
+				error: "session save server error"
+			};
+			ws.send(JSON.stringify(jsonReply));
+			throw err;
+		} else {
+			return true;
+		}
+	});
+}
+
+function loginEvent(json, ws, req) {
 	var jsonReply;
 	try {
 		console.log("query: " + 'SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json.email));
@@ -143,11 +186,13 @@ function loginEvent(json, ws) {
 				throw err;
 			}
 			if (rows.length !== 0) {
-				
 				if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
+					
+					var sessionsaved : Boolean = rememberSession(mysqlConnection.escape(json.email), req.sessionID);
 					jsonReply = {
 						event: "login",
-						email: json.email
+						email: json.email,
+						sessionid: req.sessionID;
 					};
 					ws.send(JSON.stringify(jsonReply));
 				} else {
@@ -175,7 +220,7 @@ function loginEvent(json, ws) {
 	}
 }
 
-function registerEvent(json, ws) {
+function registerEvent(json, ws, req) {
 	var jsonReply;
 	try {
 		var salt = bcrypt.genSaltSync(10);
@@ -197,7 +242,8 @@ function registerEvent(json, ws) {
 					} else {
 						jsonReply = {
 							event: "register",
-							email: json.email
+							email: json.email,
+							sessionid: req.sessionID
 						};
 						ws.send(JSON.stringify(jsonReply));
 					}
