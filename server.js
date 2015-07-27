@@ -99,7 +99,7 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function restoreSessionEvent(json, ws) {
+function restoreSessionEvent(json, ws, sessionID) {
 	mysqlConnection.query('SELECT * FROM session WHERE sessoinid = ' + mysqlConnection.escape(json.sessionid), function (err, rows, fields) {
 			if (err) {
 				throw err;
@@ -107,7 +107,7 @@ function restoreSessionEvent(json, ws) {
 			if (rows.length !== 0) {
 					jsonReply = {
 						event: "restoresession",
-						enter: true
+						sessionid: sessionID
 					};
 					ws.send(JSON.stringify(jsonReply));
 			} else {
@@ -188,11 +188,11 @@ function loginEvent(json, ws, req) {
 			if (rows.length !== 0) {
 				if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
 					
-					var sessionsaved : Boolean = rememberSession(mysqlConnection.escape(json.email), req.sessionID);
+					var sessionsaved = rememberSession(mysqlConnection.escape(json.email), req.sessionID);
 					jsonReply = {
 						event: "login",
 						email: json.email,
-						sessionid: req.sessionID;
+						sessionid: req.sessionID
 					};
 					ws.send(JSON.stringify(jsonReply));
 				} else {
