@@ -162,7 +162,7 @@ function logoutEvent(json, ws, req) {
 
 function rememberSession(ws, email, sessionid) {
 	var jsonReply;
-	console.log('INSERT INTO session (sessionid, email) VALUES ('  + '"' + sessionid + '", ' + mysqlConnection.escape(email) + ')');
+	console.log('INSERT INTO session (sessionid, email) VALUES ('  + '"' + sessionid + '", "' + mysqlConnection.escape(email) + '")');
 	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES ()'  + '"' + sessionid + '", "' + mysqlConnection.escape(email) + '")', function (err, rows, fields)  {
 		if (err) {
 			jsonReply = {
