@@ -67,8 +67,6 @@ app.use(session({
 app.use(function (req, res, next) {
 	console.log("middleware");
 	console.log(req.sessionID);
-	
-	
 	return next();
 });
 
@@ -105,7 +103,7 @@ function restoreSessionEvent(json, ws, sessionID) {
 	mysqlConnection.query('SELECT * FROM session WHERE sessionid = "' + decoder.write(json.sessionid) + '"', function (err, rows, fields) {
 			if (err) {
 				jsonReply = {
-						event: "restoreSession",
+						event: "restoresession",
 						error: "server sql error"
 					};
 				ws.send(JSON.stringify(jsonReply));
@@ -119,7 +117,7 @@ function restoreSessionEvent(json, ws, sessionID) {
 					ws.send(JSON.stringify(jsonReply));
 			} else {
 				jsonReply = {
-						event: "restoreSession",
+						event: "restoresession",
 						error: "sessionid not found"
 					};
 				ws.send(JSON.stringify(jsonReply));
