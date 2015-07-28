@@ -101,8 +101,14 @@ app.listen(server_port, server_ip_address);
 
 function restoreSessionEvent(json, ws, sessionID) {
 	var jsonReply;
+	console.log('SELECT * FROM session WHERE sessionid = ' + mysqlConnection.escape(json.sessionid));
 	mysqlConnection.query('SELECT * FROM session WHERE sessionid = ' + mysqlConnection.escape(json.sessionid), function (err, rows, fields) {
 			if (err) {
+				jsonReply = {
+						event: "restoreSession",
+						error: "server sql error"
+					};
+				ws.send(JSON.stringify(jsonReply));
 				throw err;
 			}
 			if (rows.length !== 0) {
