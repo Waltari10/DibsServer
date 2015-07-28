@@ -82,9 +82,9 @@ app.ws('/', function (ws, req) {
 		console.log(message);
 		console.log(json.event);
 		if (json.event === "login") {
-			loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, rememberSession);
+			loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
 		} else if (json.event === "register") {
-			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, rememberSession);
+			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
 		} else if (json.event === "getProfile") {
 			getProfileEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "setProfile") {
