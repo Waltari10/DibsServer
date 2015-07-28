@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-	Action: function (json, ws, req, mysqlConnection, bcrypt, decoder, rememberSession) {
+	Action: function (json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession) {
 		var jsonReply;
 		try {
 			console.log("query: " + 'SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json.email));
@@ -12,7 +12,7 @@ module.exports = {
 				if (rows.length !== 0) {
 					if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
 						
-						rememberSession("login", ws, json, req.sessionID);
+						new RememberSession("login", ws, json, req.sessionID);
 						jsonReply = {
 							event: "login",
 							email: json.email,
@@ -43,4 +43,4 @@ module.exports = {
 			console.log(err);
 		}
 	}
-}
+};

@@ -16,7 +16,11 @@ var StringDecoder		= require('string_decoder').StringDecoder,  //Package for dec
 	app					= express(),
 	expressWs			= require('express-ws')(app),
 	loginEvent			= require('./LoginEvent.js'),
-	restoreSessionEvent	= require('./RestoreSessionEvent.js');
+	restoreSessionEvent	= require('./RestoreSessionEvent.js'),
+	setProfileEvent		= require('./SetProfileEvent.js'),
+	getProfileEvent		= require('./GetProfileEvent.js'),
+	registerEvent		= require('./RegisterEvent.js'),
+	logoutEvent			= require('./Logoutevent.js');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
@@ -80,15 +84,15 @@ app.ws('/', function (ws, req) {
 		if (json.event === "login") {
 			loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, rememberSession);
 		} else if (json.event === "register") {
-			registerEvent(json, ws, req);
+			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, rememberSession);
 		} else if (json.event === "getProfile") {
-			getProfileEvent(json, ws);
+			getProfileEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "setProfile") {
-			setProfileEvent(json, ws);
+			setProfileEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "logout") {
-			logoutEvent(json, ws, req);
+			logoutEvent.Action(json, ws, req);
 		} else if (json.event === "ping") {
-			pingEvent(json, ws);
+			pingEvent.Action(json, ws);
 		} else if (json.event === "restoresession") {
 			restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
 		}
@@ -97,174 +101,19 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function pingEvent(json, ws) {
-	console.log("ping event");
-	var jsonReply;
-	try {
-		jsonReply = {
-				event: "pong"
-			};
-		ws.send(JSON.stringify(jsonReply));
-	} catch (err) {
-		jsonReply = {
-				event: "error",
-				error: "server error on pong"
-			};
-		ws.send(JSON.stringify(jsonReply));
-		console.log(err);
-	}
-}
-
-function logoutEvent(json, ws, req) {
-	var jsonReply;
-	try {
-		req.session.destroy(function(err) {
-			if (err) {
-				throw err;
-			}
-                });
-		jsonReply = {
-				event: "logout"
-			};
-		ws.send(JSON.stringify(jsonReply));
-	} catch (err) {
-		jsonReply = {
-				event: "error",
-				error: "server error on logout"
-			};
-		ws.send(JSON.stringify(jsonReply));
-		console.log(err);
-	}
-}
-
-function rememberSession(event, ws, json, sessionid) {
-	var jsonReply;
-	console.log('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')');
-	mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')', function (err, rows, fields)  {
-		if (err) {
-			jsonReply = {
-				event: event,
-				error: "session save server error"
-			};
-			ws.send(JSON.stringify(jsonReply));
-			throw err;
-		} else {
-			return true;
-		}
-	});
-}
-
-function registerEvent(json, ws, req) {
-	var jsonReply;
-	try {
-		var salt = bcrypt.genSaltSync(10);
-		console.log('SELECT 1 FROM user WHERE email = ' + mysqlConnection.escape(json.email));
-		mysqlConnection.query('SELECT 1 FROM user WHERE email= ' + mysqlConnection.escape(json.email), function (err, fields, rows) {
-			if (err) {
-				throw err;
-			}
-			if (fields.length === 0) { //user with this email doesn't exist
-				console.log('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '")');
-				mysqlConnection.query('INSERT INTO user (email, nickname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.nickname) + ', "' + bcrypt.hashSync(json.password, salt) + '")', function (err, result) {
-					if (err) {
-						jsonReply = {
-							event: "register",
-							error: "server error"
-						};
-						ws.send(JSON.stringify(jsonReply));
-						throw err;
-					} else {
-						rememberSession("register", ws, json, req.sessionID);
-						jsonReply = {
-							event: "register",
-							email: json.email,
-							sessionid: req.sessionID
-						};
-						ws.send(JSON.stringify(jsonReply));
-					}
-				});
-			} else {
-				jsonReply = {
-						event: "register",
-						error: "email taken"
-					};
-				ws.send(JSON.stringify(jsonReply));
-			}
-		});
-
-	} catch (err) {
-		var jsonReply = {
-				event: "register",
-				error: "server error"
-			};
-		ws.send(JSON.stringify(jsonReply));
-		console.log(err);
-	}
-}
-
-function getProfileEvent(json, ws) {
-	var jsonReply;
-	try {
-		console.log('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email));
-		mysqlConnection.query('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email), function (err, rows, fields) {
-			if (err) {
-				throw err;
-			}
-			
-			if (fields.length !== 0) {
-				jsonReply = {
-					event: "getProfile",
-					cardname: rows[0].cardname,
-					picture: rows[0].picture,
-					stats: rows[0].stats,
-					email: rows[0].email
-				};
-				console.log(JSON.stringify(jsonReply));
-				ws.send(JSON.stringify(jsonReply));
-			} else { //Profile with given email doesn't exist
-				jsonReply = {
-					event: "error",
-					error: "no profile on getProfile"
-				};
-				ws.send(JSON.stringify(jsonReply));
-			}
-		});
-	} catch (err) {
-		jsonReply = {
-				event: "error",
-				error: "server error on getProfile"
-			};
-		ws.send(JSON.stringify(jsonReply));
-		console.log(err);
-	}
-}
-
-function setProfileEvent(json, ws) {
-	var jsonReply;
-	try {
-		console.log('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ')');
-		mysqlConnection.query('INSERT INTO card (cardname, picture, stats, email) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ')', function (err, result) {
+function RememberSession (event, ws, json, sessionid, mysqlConnection) {
+		var jsonReply;
+		console.log('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')');
+		mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')', function (err, rows, fields)  {
 			if (err) {
 				jsonReply = {
-					event: "error",
-					error: "server error on setProfile SQL"
+					event: event,
+					error: "session save server error"
 				};
 				ws.send(JSON.stringify(jsonReply));
 				throw err;
 			} else {
-				jsonReply = {
-					event: "setProfile",
-					error: "true"
-				};
-				ws.send(JSON.stringify(jsonReply));
+				return true;
 			}
 		});
-	} catch (err) {
-		jsonReply = {
-				event: "error",
-				error: "server error on setProfile"
-			};
-		ws.send(JSON.stringify(jsonReply));
-		console.log(err);
 	}
-}
