@@ -100,6 +100,7 @@ app.ws('/', function (ws, req) {
 app.listen(server_port, server_ip_address);
 
 function restoreSessionEvent(json, ws, sessionID) {
+	var jsonReply;
 	mysqlConnection.query('SELECT * FROM session WHERE sessionid = ' + mysqlConnection.escape(json.sessionid), function (err, rows, fields) {
 			if (err) {
 				throw err;
