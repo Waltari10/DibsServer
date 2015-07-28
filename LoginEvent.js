@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-	action: function (json, ws, req) {
+	Action: function (json, ws, req, mysqlConnection, bcrypt, decoder, rememberSession) {
 		var jsonReply;
 		try {
 			console.log("query: " + 'SELECT * FROM user WHERE email = ' + mysqlConnection.escape(json.email));
