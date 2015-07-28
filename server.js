@@ -20,7 +20,7 @@ var StringDecoder		= require('string_decoder').StringDecoder,  //Package for dec
 	setProfileEvent		= require('./SetProfileEvent.js'),
 	getProfileEvent		= require('./GetProfileEvent.js'),
 	registerEvent		= require('./RegisterEvent.js'),
-	logoutEvent			= require('./Logoutevent.js');
+	logoutEvent			= require('./LogoutEvent.js');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
