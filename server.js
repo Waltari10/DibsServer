@@ -14,7 +14,8 @@ var StringDecoder		= require('string_decoder').StringDecoder,  //Package for dec
 	mysql_database		= 'dibsserver',
 	decoder				= new StringDecoder('utf8'), //Client send UTF8 buffer which this is used to decode
 	app					= express(),
-	expressWs			= require('express-ws')(app);
+	expressWs			= require('express-ws')(app),
+	loginEvent			= require('./LoginEvent.js');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
@@ -70,15 +71,13 @@ app.use(function (req, res, next) {
 	return next();
 });
 
-
-
 app.ws('/', function (ws, req) {
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
 		console.log(json.event);
 		if (json.event === "login") {
-			loginEvent(json, ws, req);
+			LoginEvent.action(json, ws, req);
 		} else if (json.event === "register") {
 			registerEvent(json, ws, req);
 		} else if (json.event === "getProfile") {
