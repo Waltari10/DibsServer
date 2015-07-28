@@ -77,7 +77,7 @@ app.ws('/', function (ws, req) {
 		console.log(message);
 		console.log(json.event);
 		if (json.event === "login") {
-			LoginEvent.action(json, ws, req);
+			loginEvent.action(json, ws, req);
 		} else if (json.event === "register") {
 			registerEvent(json, ws, req);
 		} else if (json.event === "getProfile") {
