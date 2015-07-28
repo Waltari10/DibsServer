@@ -101,7 +101,7 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function RememberSession (event, ws, json, sessionid, mysqlConnection) {
+function RememberSession (event, ws, json, sessionid) {
 		var jsonReply;
 		console.log('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')');
 		mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')', function (err, rows, fields)  {
