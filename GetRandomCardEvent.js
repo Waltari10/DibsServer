@@ -7,8 +7,8 @@ module.exports = {
 		
 		var jsonReply;
 		try {
-			console.log("SELECT COUNT(*) from card");
-			mysqlConnection.query('SELECT COUNT(*) from card', function (err, result) {
+			console.log("SELECT COUNT(*) from card AS count");
+			mysqlConnection.query('SELECT COUNT(*) from card AS count', function (err, result) {
 				if (err) {
 					throw err;
 				} 
