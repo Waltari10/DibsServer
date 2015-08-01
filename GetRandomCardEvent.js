@@ -6,6 +6,7 @@ module.exports = {
 		var Type = require('type-of-is');
 		
 		var jsonReply;
+		var cardAmount;
 		try {
 			console.log("SELECT COUNT(*) AS count from card");
 			mysqlConnection.query('SELECT COUNT(*) AS count from card', function (err, result) {
@@ -13,16 +14,55 @@ module.exports = {
 					throw err;
 				} 
 				else {
-					console.log(Type.of(result));
+					cardAmount = result[0].count;
 					console.log("card count is as: " + result[0].count);
-					console.log("Card count is: " + result["COUNT(*)"]);
-					console.log(result.count);
-					console.log(result[0].count);
-					console.log(result[0]['COUNT(*)']);
 				}
 			});
-		} catch (err) {
+			
+			var rand = Math.floor((Math.random() * cardamount ) + 1 ); //Rand number between 1 and amount of cards
+			
+			while (contains(json.cardIds, rand)) {
+				console.log("rand: " + rand);
+				rand = Math.floor((Math.random() * cardamount ) + 1 );
+			}
+			console.log("SELECT 1 FROM card WHERE idcard = " + rand);
+			mysqlConnection.query("SELECT 1 FROM card WHERE idcard = " + rand, function (err, result) {
+					if (err) {
+						throw err;
+					} 
+					else {
+						jsonReply = {
+							event: "getRandomCard",
+							idcard: result[0].idcard,
+							cardname: rows[0].cardname,
+							picture: rows[0].picture,
+							stats: rows[0].stats,
+							email: rows[0].email
+						};
+						
+						console.log("idcard: " + result[0].idcard);
+						console.log("cardname: " + result[0].cardname);
+						console.log("picture: " + result[0].picture);
+						console.log("stats: " + result[0].stats);
+						console.log("email: " + result[0].email);
+						
+						
+						console.log(JSON.stringify(jsonReply));
+						ws.send(JSON.stringify(jsonReply));
+					}
+				});
+
+				} catch (err) {
 			console.log(err);
+		}
+		
+	function contains(a, obj) {
+		for (var i = 0; i < a.length; i++) {
+			if (a[i] === obj) {
+				return true;
+			}
+		}
+		return false;
 		}
 	}
 };
