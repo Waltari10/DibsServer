@@ -2,6 +2,9 @@
 
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
+		
+		var Type = require('type-of-is');
+		
 		var jsonReply;
 		try {
 			console.log("SELECT COUNT(*) from card");
@@ -10,7 +13,8 @@ module.exports = {
 					throw err;
 				} 
 				else {
-				console.log("Card count is" + result["COUNT(*)"]);
+					console.log(Type.of(result));
+					console.log("Card count is" + result["COUNT(*)"]);
 					console.log(result);
 				}
 			});

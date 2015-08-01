@@ -9,7 +9,6 @@ module.exports = {
 				if (err) {
 					throw err;
 				}
-				
 				if (fields.length !== 0) {
 					jsonReply = {
 						event: "getCard",
