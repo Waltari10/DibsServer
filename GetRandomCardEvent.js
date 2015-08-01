@@ -34,10 +34,10 @@ module.exports = {
 						jsonReply = {
 							event: "getRandomCard",
 							idcard: result[0].idcard,
-							cardname: rows[0].cardname,
-							picture: rows[0].picture,
-							stats: rows[0].stats,
-							email: rows[0].email
+							cardname: result[0].cardname,
+							picture: result[0].picture,
+							stats: result[0].stats,
+							email: result[0].email
 						};
 						
 						console.log("idcard: " + result[0].idcard);
