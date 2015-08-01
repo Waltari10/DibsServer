@@ -14,7 +14,8 @@ module.exports = {
 				} 
 				else {
 					console.log(Type.of(result));
-					console.log("Card count is" + result["COUNT(*)"]);
+					console.log("card count is as: " + result.count);
+					console.log("Card count is: " + result["COUNT(*)"]);
 					console.log(result);
 				}
 			});
