@@ -19,11 +19,11 @@ module.exports = {
 				}
 			});
 			
-			var rand = Math.floor((Math.random() * cardamount ) + 1 ); //Rand number between 1 and amount of cards
+			var rand = Math.floor((Math.random() * cardAmount ) + 1 ); //Rand number between 1 and amount of cards
 			
 			while (contains(json.cardIds, rand)) {
 				console.log("rand: " + rand);
-				rand = Math.floor((Math.random() * cardamount ) + 1 );
+				rand = Math.floor((Math.random() * cardAmount ) + 1 );
 			}
 			console.log("SELECT 1 FROM card WHERE idcard = " + rand);
 			mysqlConnection.query("SELECT 1 FROM card WHERE idcard = " + rand, function (err, result) {
