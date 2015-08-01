@@ -1,27 +1,28 @@
 "use strict";
 
-var StringDecoder		= require('string_decoder').StringDecoder,  //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
-	bcrypt				= require('bcrypt'),
-	mysql				= require('mysql'),
-	express				= require('express'),
-	session				= require('express-session'),
-	crypto				= require('crypto'),
-	server_port			= process.env.OPENSHIFT_NODEJS_PORT || 8080,
-	server_ip_address	= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
-	mysql_port			= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080,
-	mysql_host			= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1',
-	mysql_user			= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root',
-	mysql_database		= 'dibsserver',
-	decoder				= new StringDecoder('utf8'), //Client send UTF8 buffer which this is used to decode
-	app					= express(),
-	expressWs			= require('express-ws')(app),
-	loginEvent			= require('./LoginEvent.js'),
-	restoreSessionEvent	= require('./RestoreSessionEvent.js'),
-	setProfileEvent		= require('./SetProfileEvent.js'),
-	getProfileEvent		= require('./GetProfileEvent.js'),
-	registerEvent		= require('./RegisterEvent.js'),
-	logoutEvent			= require('./LogoutEvent.js'),
-	pingEvent			= require('./PingEvent.js');
+var StringDecoder			= require('string_decoder').StringDecoder,  //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
+	bcrypt					= require('bcrypt'),
+	mysql					= require('mysql'),
+	express					= require('express'),
+	session					= require('express-session'),
+	crypto					= require('crypto'),
+	server_port				= process.env.OPENSHIFT_NODEJS_PORT || 8080,
+	server_ip_address		= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
+	mysql_port				= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080,
+	mysql_host				= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1',
+	mysql_user				= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root',
+	mysql_database			= 'dibsserver',
+	decoder					= new StringDecoder('utf8'), //Client send UTF8 buffer which this is used to decode
+	app						= express(),
+	expressWs				= require('express-ws')(app),
+	loginEvent				= require('./LoginEvent.js'),
+	restoreSessionEvent		= require('./RestoreSessionEvent.js'),
+	setCardEvent			= require('./SetcardEvent.js'),
+	getCardEvent			= require('./GetcardEvent.js'),
+	registerEvent			= require('./RegisterEvent.js'),
+	logoutEvent				= require('./LogoutEvent.js'),
+	pingEvent				= require('./PingEvent.js'),
+	getRandomCardEvent 		= require('./GetRandomCardEvent');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
@@ -87,10 +88,12 @@ app.ws('/', function (ws, req) {
 		} else if (json.event === "register") {
 			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
 		} else if (json.event === "getProfile") {
-			getProfileEvent.Action(json, ws, mysqlConnection);
+			getCardEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "setProfile") {
-			setProfileEvent.Action(json, ws, mysqlConnection);
-		} else if (json.event === "logout") {
+			setCardEvent.Action(json, ws, mysqlConnection);
+		} else if (json.event === "getRandomCard") {
+			getRandomCardEvent.Action(json, ws, mysqlConnection);
+		}else if (json.event === "logout") {
 			logoutEvent.Action(json, ws, req);
 		} else if (json.event === "ping") {
 			pingEvent.Action(json, ws);

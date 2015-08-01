@@ -9,14 +9,13 @@ module.exports = {
 				if (err) {
 					jsonReply = {
 						event: "error",
-						error: "server error on setProfile SQL"
+						error: "server error on setCard SQL"
 					};
 					ws.send(JSON.stringify(jsonReply));
 					throw err;
 				} else {
 					jsonReply = {
-						event: "setProfile",
-						error: "true"
+						event: "setCard"
 					};
 					ws.send(JSON.stringify(jsonReply));
 				}
@@ -24,7 +23,7 @@ module.exports = {
 		} catch (err) {
 			jsonReply = {
 					event: "error",
-					error: "server error on setProfile"
+					error: "server error on setCard"
 				};
 			ws.send(JSON.stringify(jsonReply));
 			console.log(err);

@@ -12,7 +12,7 @@ module.exports = {
 				
 				if (fields.length !== 0) {
 					jsonReply = {
-						event: "getProfile",
+						event: "getCard",
 						cardname: rows[0].cardname,
 						picture: rows[0].picture,
 						stats: rows[0].stats,
@@ -23,7 +23,7 @@ module.exports = {
 				} else { //Profile with given email doesn't exist
 					jsonReply = {
 						event: "error",
-						error: "no profile on getProfile"
+						error: "no card on getCard"
 					};
 					ws.send(JSON.stringify(jsonReply));
 				}
@@ -31,7 +31,7 @@ module.exports = {
 		} catch (err) {
 			jsonReply = {
 					event: "error",
-					error: "server error on getProfile"
+					error: "server error on getCard"
 				};
 			ws.send(JSON.stringify(jsonReply));
 			console.log(err);
