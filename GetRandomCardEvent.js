@@ -8,7 +8,7 @@ module.exports = {
 		var jsonReply;
 		try {
 			console.log("SELECT COUNT(*) AS count from card");
-			mysqlConnection.query('SELECT COUNT(*) from card AS count', function (err, result) {
+			mysqlConnection.query('SELECT COUNT(*) AS count from card', function (err, result) {
 				if (err) {
 					throw err;
 				} 
@@ -18,6 +18,7 @@ module.exports = {
 					console.log("Card count is: " + result["COUNT(*)"]);
 					console.log(result.count);
 					console.log(result[0].count);
+					console.log(result[0]['COUNT(*)']);
 				}
 			});
 		} catch (err) {
