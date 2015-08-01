@@ -25,8 +25,10 @@ module.exports = {
 				console.log("rand: " + rand);
 				rand = Math.floor((Math.random() * cardAmount ) + 1 );
 			}
+			
+			
 			console.log("SELECT 1 FROM card WHERE idcard = " + rand);
-			mysqlConnection.query("SELECT 1 FROM card WHERE idcard = " + rand, function (err, result) {
+			mysqlConnection.query("SELECT * FROM card WHERE idcard = " + rand, function (err, result) {
 					if (err) {
 						throw err;
 					} 
