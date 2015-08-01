@@ -10,7 +10,7 @@ module.exports = {
 					throw err;
 				} 
 				else {
-					console.log("Card count is" + result);
+					console.log("Card count is" + result.COUNT(*));
 					console.log(result);
 				}
 			});
