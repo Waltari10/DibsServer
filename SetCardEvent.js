@@ -4,7 +4,7 @@ module.exports = {
 		Action: function(json, ws, mysqlConnection) {
 		var jsonReply;
 		try {
-			if (jsonReply.profilecard == "0") {
+			if (json.profilecard == "0") {
 				
 				var query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + 1 + ', ' + 0 +')';
 				
