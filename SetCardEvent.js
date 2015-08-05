@@ -14,7 +14,7 @@ module.exports = {
 					if (err) {
 						jsonReply = {
 							event: "error",
-							error: "server error on setCard SQL"
+							error: "server error on insert setCard SQL"
 						};
 						ws.send(JSON.stringify(jsonReply));
 						throw err;
@@ -48,7 +48,7 @@ module.exports = {
 					if (err) {
 						jsonReply = {
 							event: "error",
-							error: "server error on setCard SQL"
+							error: "server error on update setCard SQL"
 						};
 						ws.send(JSON.stringify(jsonReply));
 						throw err;
