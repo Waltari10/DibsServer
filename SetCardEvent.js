@@ -4,7 +4,7 @@ module.exports = {
 		Action: function(json, ws, mysqlConnection) {
 		var jsonReply;
 		try {
-			if (json.profilecard == "0") {
+			if (json.profilecard == "0") { //Works
 				
 				var query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + 1 + ', ' + 0 +')';
 				
@@ -34,13 +34,7 @@ module.exports = {
 				+ ', ' + mysqlConnection.escape(json.email) 
 				+ ', 1'
 				+ ', 1' 
-				+ ') ON DUPLICATE KEY UPDATE cardname=VALUES(' + mysqlConnection.escape(json.cardname)
-				+ '), picture=VALUES(' + mysqlConnection.escape(json.picture) 
-				+ '), stats=VALUES(' + mysqlConnection.escape(json.stats) 
-				+ '), email=VALUES(' + mysqlConnection.escape(json.email) 
-				+ '), rank=VALUES(1'
-				+ '), profilecard=VALUES(1' 
-				+ ')';
+				+ ') ON DUPLICATE KEY UPDATE cardname=VALUES(cardname), picture=VALUES(picture), stats=VALUES(stats), email=VALUES(email), rank=VALUES(rank), profilecard=VALUES(profilecard)';
 				
 				console.log(query);
 				
