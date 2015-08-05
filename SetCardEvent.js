@@ -15,7 +15,7 @@ module.exports = {
 					throw err;
 				} else {
 					jsonReply = {
-						event: "setCard"
+						event: "profileSaved"
 					};
 					ws.send(JSON.stringify(jsonReply));
 				}
