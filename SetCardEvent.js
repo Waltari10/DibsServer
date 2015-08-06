@@ -19,7 +19,7 @@ module.exports = {
 				if (rows.length !== 0) { //If no rows this is the initial profile creation. When initializing a profile the user cannot have any cards pounds to his name
 					initialProfileCreation = true;
 				}
-			}
+			});
 			
 			if (json.profilecard == "0") { //Works
 				console.log("Making new regular card");
@@ -66,7 +66,27 @@ module.exports = {
 				});
 			} else if (json.profileCard == "1" && !initialProfileCreation) {
 				console.log("Updating profile card");
+				//cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + 1 + ', ' + 0 +
 				
+				query = 'UPDATE card SET cardname=' + mysqlConnection.escape(json.cardname) + ', stats=' + mysqlConnection.escape(json.stats) + ', picture=' + mysqlConnection.escape(json.picture) + ', email=' + mysqlConnection.escape(json.email) + ', rank=' + mysqlConnection.escape(json.rank) + ' WHERE email=' + mysqlConnection.escape(json.email) + ' AND profilecard=1';
+				
+				console.log(query);
+				
+				mysqlConnection.query(query, function (err, result) {
+					if (err) {
+						jsonReply = {
+							event: "error",
+							error: "server error on update profile card SQL"
+						};
+						ws.send(JSON.stringify(jsonReply));
+						throw err;
+					} else {
+						jsonReply = {
+							event: "profileUpdated"
+						};
+						ws.send(JSON.stringify(jsonReply));
+					}
+				});
 			}
 		} catch (err) {
 		jsonReply = {

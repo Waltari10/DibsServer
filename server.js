@@ -87,9 +87,9 @@ app.ws('/', function (ws, req) {
 			loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
 		} else if (json.event === "register") {
 			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
-		} else if (json.event === "getProfile") {
+		} else if (json.event === "getCard") {
 			getCardEvent.Action(json, ws, mysqlConnection);
-		} else if (json.event === "setProfile") {
+		} else if (json.event === "setCard") {
 			setCardEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "getRandomCard") {
 			getRandomCardEvent.Action(json, ws, mysqlConnection);
