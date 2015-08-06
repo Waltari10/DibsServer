@@ -23,7 +23,7 @@ module.exports = {
 			
 			if (json.profilecard == "0") { //Works
 				console.log("Making new regular card");
-				query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + 1 + ', ' + 0 +')';
+				query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.email) + ', ' + 0 +')';
 				
 				console.log(query);
 				
@@ -45,7 +45,7 @@ module.exports = {
 			} else if (json.profileCard == "1" && initialProfileCreation) { 
 				console.log("Making new profile card");
 				
-				query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + 1 + ', ' + 1 +')';
+				query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.rank) + ', ' + 1 +')';
 				
 				console.log(query);
 				
