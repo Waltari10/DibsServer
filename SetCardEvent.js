@@ -35,7 +35,7 @@ module.exports = {
 					ws.send(JSON.stringify(jsonReply));
 					throw err;
 				}
-				if (rows.length !== 0) { //If no rows this is the initial profile creation. When initializing a profile the user cannot have any cards pounds to his name
+				if (rows.length === 0) { //If no rows this is the initial profile creation. When initializing a profile the user cannot have any cards pounds to his name
 					console.log("Making new profile card");
 				
 					query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.rank) + ', ' + 1 +')';
