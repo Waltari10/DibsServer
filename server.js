@@ -22,7 +22,8 @@ var StringDecoder			= require('string_decoder').StringDecoder,  //Package for de
 	registerEvent			= require('./RegisterEvent.js'),
 	logoutEvent				= require('./LogoutEvent.js'),
 	pingEvent				= require('./PingEvent.js'),
-	getRandomCardEvent 		= require('./GetRandomCardEvent');
+	getRandomCardEvent 		= require('./GetRandomCardEvent'),
+	toobusy 				= require('toobusy-js');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
@@ -59,6 +60,11 @@ function uuidFromBytes(rnd) {
 	rnd.shift();
 	return rnd.join('-');
 }
+
+app.use(function(req, res, next) {
+	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience");
+	else next();
+});
 
 app.use(session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
