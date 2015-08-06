@@ -21,7 +21,7 @@ module.exports = {
 					initialProfileCreation = true;
 				}
 			});
-			
+			console.log(json.profileCard + " | " + initialProfileCreation);
 			if (json.profilecard === "0") { //Works
 				console.log("Making new regular card");
 				query = 'INSERT INTO card (cardname, picture, stats, email, rank, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.stats) + ', ' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.email) + ', ' + 0 +')';
