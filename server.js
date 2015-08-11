@@ -85,7 +85,7 @@ app.use(function (req, res, next) {
 	var jsonReply = {
 		event: "ping",
 	};
-	ws.send(JSON.stringify(jsonReply));
+	res.send(JSON.stringify(jsonReply));
 	}, 10); //ping client every 10 seconds
 	return next();
 });
