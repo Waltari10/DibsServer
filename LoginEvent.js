@@ -20,7 +20,8 @@ module.exports = {
 								};
 							ws.send(JSON.stringify(jsonReply));
 							throw err;
-						});
+						}
+						
 						if (rows.length === 0) {  //No profile card set
 							jsonReply = {
 							event: "login",
@@ -38,6 +39,7 @@ module.exports = {
 						}
 						ws.send(JSON.stringify(jsonReply));
 						new RememberSession("login", ws, json, req.sessionID);
+						});
 					} else {
 						jsonReply = {
 							event: "login",
