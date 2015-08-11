@@ -66,7 +66,8 @@ app.use(function(req, res, next) {
 	else next();
 });
 
-app.use(session({
+app.use(
+	session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
 	maxAge: null,
 	secure: false,
@@ -79,8 +80,13 @@ app.use(session({
 }));
 
 app.use(function (req, res, next) {
-	console.log("middleware");
-	console.log(req.sessionID);
+	setInterval(function() {
+	console.log("pinging client");
+	jsonPing = {
+		event: "ping",
+	};
+	ws.send(JSON.stringify(jsonReply));
+	}, 10); //ping client every 10 seconds
 	return next();
 });
 
