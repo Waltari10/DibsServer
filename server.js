@@ -82,7 +82,7 @@ app.use(
 app.use(function (req, res, next) {
 	setInterval(function() {
 	console.log("pinging client");
-	jsonPing = {
+	var jsonReply = {
 		event: "ping",
 	};
 	ws.send(JSON.stringify(jsonReply));
