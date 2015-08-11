@@ -12,13 +12,32 @@ module.exports = {
 				if (rows.length !== 0) {
 					if (bcrypt.compareSync(json.password, decoder.write(rows[0].password))) {
 						
-						new RememberSession("login", ws, json, req.sessionID);
-						jsonReply = {
+						mysqlConnection.query('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email), function (err, rows, fields) { //Check if user has a profile card
+						if (err) {
+							jsonReply = {
+									event: "error",
+									error: "server error on checking whether cards exist"
+								};
+							ws.send(JSON.stringify(jsonReply));
+							throw err;
+						});
+						if (rows.length === 0) {  //No profile card set
+							jsonReply = {
 							event: "login",
 							email: json.email,
-							sessionid: req.sessionID
+							sessionid: req.sessionID,
+							profile: false
 						};
+						} else {
+							jsonReply = {
+							event: "login",
+							email: json.email,
+							sessionid: req.sessionID,
+							profile: true
+							};
+						}
 						ws.send(JSON.stringify(jsonReply));
+						new RememberSession("login", ws, json, req.sessionID);
 					} else {
 						jsonReply = {
 							event: "login",
@@ -43,4 +62,6 @@ module.exports = {
 			console.log(err);
 		}
 	}
+	
+	
 };
