@@ -4,7 +4,7 @@ module.exports = {
 	Action: function(json, ws, mysqlConnection) {
 		var jsonReply, query;
 		try {
-			query = 'SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email) + ', AND profileCard = 1';
+			query = 'SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email) + ' AND profilecard = 1';
 			console.log(query);
 			mysqlConnection.query(query, function (err, rows, fields) {
 				if (err) {
