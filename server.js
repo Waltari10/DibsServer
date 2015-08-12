@@ -81,12 +81,12 @@ app.use(
 
 app.use(function (req, res, next) {
 	setInterval(function() {
-	console.log("pinging client");
-	var jsonReply = {
-		event: "ping",
-	};
-	res.send(JSON.stringify(jsonReply));
-	}, 10000); //ping client every 10 seconds
+		console.log("pinging client");
+		var jsonReply = {
+			event: "ping",
+		};
+		res.send(JSON.stringify(jsonReply));
+	}, 20000); //ping client every 10 seconds
 	return next();
 });
 
@@ -109,7 +109,7 @@ app.ws('/', function (ws, req) {
 			logoutEvent.Action(json, ws, req);
 		} else if (json.event === "ping") {
 			pingEvent.Action(json, ws);
-		} else if (json.event === "restoresession") {
+		} else if (json.event === "restoreSession") {
 			restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
 		}
 	});
