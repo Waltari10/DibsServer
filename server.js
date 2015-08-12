@@ -23,7 +23,8 @@ var StringDecoder			= require('string_decoder').StringDecoder,  //Package for de
 	logoutEvent				= require('./LogoutEvent.js'),
 	pingEvent				= require('./PingEvent.js'),
 	getRandomCardEvent 		= require('./GetRandomCardEvent'),
-	toobusy 				= require('toobusy-js');
+	toobusy 				= require('toobusy-js'),
+	setProfileCardEvent		= require('./setProfileCardEvent.js');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
@@ -101,7 +102,9 @@ app.ws('/', function (ws, req) {
 			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
 		} else if (json.event === "getCard") {
 			getCardEvent.Action(json, ws, mysqlConnection);
-		} else if (json.event === "setCard") {
+		} else if (json.event === "setProfileCard"){
+			setProfileCardEvent.Action(json, ws, mysqlConnection);
+		}else if (json.event === "setCard") {
 			setCardEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "getRandomCard") {
 			getRandomCardEvent.Action(json, ws, mysqlConnection);
