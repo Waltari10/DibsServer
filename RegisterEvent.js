@@ -14,7 +14,7 @@ module.exports = {
 					throw err;
 				}
 				if (fields.length === 0) { //user with this email doesn't exist
-					var query = 'INSERT INTO user (email, firstname, lastname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.firstname) + ', "' + mysqlConnection.escape(json.lastname) + ', "' + bcrypt.hashSync(json.password, salt) + '")';
+					var query = 'INSERT INTO user (email, firstname, lastname, password) VALUES (' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.firstname) + ', ' + mysqlConnection.escape(json.lastname) + ', "' + bcrypt.hashSync(json.password, salt) + '")';
 					console.log(query);
 					mysqlConnection.query(query, function (err, result) {
 						if (err) {
