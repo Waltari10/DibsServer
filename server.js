@@ -18,13 +18,13 @@ var StringDecoder			= require('string_decoder').StringDecoder,  //Package for de
 	loginEvent				= require('./LoginEvent.js'),
 	restoreSessionEvent		= require('./RestoreSessionEvent.js'),
 	setCardEvent			= require('./SetCardEvent.js'),
-	getCardEvent			= require('./GetCardEvent.js'),
+	getProfileCardEvent		= require('./GetProfileCardEvent.js'),
 	registerEvent			= require('./RegisterEvent.js'),
 	logoutEvent				= require('./LogoutEvent.js'),
 	pingEvent				= require('./PingEvent.js'),
 	getRandomCardEvent 		= require('./GetRandomCardEvent'),
 	toobusy 				= require('toobusy-js'),
-	setProfileCardEvent		= require('./setProfileCardEvent.js');
+	setProfileCardEvent		= require('./SetProfileCardEvent.js');
 
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
@@ -100,13 +100,11 @@ app.ws('/', function (ws, req) {
 			loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
 		} else if (json.event === "register") {
 			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
-		} else if (json.event === "getCard") {
-			getCardEvent.Action(json, ws, mysqlConnection);
+		} else if (json.event === "getProfileCard") {
+			getProfileCardEvent.Action(json, ws, mysqlConnection);
 		} else if (json.event === "setProfileCard"){
 			setProfileCardEvent.Action(json, ws, mysqlConnection);
-		}else if (json.event === "setCard") {
-			setCardEvent.Action(json, ws, mysqlConnection);
-		} else if (json.event === "getRandomCard") {
+		}else if (json.event === "getRandomCard") {
 			getRandomCardEvent.Action(json, ws, mysqlConnection);
 		}else if (json.event === "logout") {
 			logoutEvent.Action(json, ws, req);

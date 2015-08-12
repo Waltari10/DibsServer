@@ -2,34 +2,38 @@
 
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
-		var jsonReply;
+		var jsonReply, query;
 		try {
-			console.log('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email));
-			mysqlConnection.query('SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email), function (err, rows, fields) {
+			query = 'SELECT * FROM card WHERE email = ' + mysqlConnection.escape(json.email) + ', AND profileCard = 1';
+			console.log(query);
+			mysqlConnection.query(query, function (err, rows, fields) {
 				if (err) {
 					throw err;
 				}
 				if (fields.length !== 0) {
 					jsonReply = {
-						event: "getCard",
+						event: "getProfileCard",
 						cardname: rows[0].cardname,
 						picture: rows[0].picture,
-						stats: rows[0].stats,
-						email: rows[0].email
+						rank: rows[0].rank,
+						value: rows[0].value,
+						email: rows[0].email,
+						description: rows[0].description,
+						color: rows[0].color
 					};
 					console.log(JSON.stringify(jsonReply));
 					ws.send(JSON.stringify(jsonReply));
-				} else { //Profile with given email doesn't exist
+				} else { //ProfileCard with given email doesn't exist
 					jsonReply = {
-						event: "error",
-						error: "no card on getCard"
+						event: "getProfileCard",
+						error: "no profileCard set"
 					};
 					ws.send(JSON.stringify(jsonReply));
 				}
 			});
 		} catch (err) {
 			jsonReply = {
-					event: "error",
+					event: "getProfileCard",
 					error: "server error on getCard"
 				};
 			ws.send(JSON.stringify(jsonReply));
