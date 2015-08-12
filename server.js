@@ -87,7 +87,7 @@ app.use(function (req, res, next) {
 			event: "ping",
 		};
 		res.send(JSON.stringify(jsonReply));
-	}, 20000); //ping client every 10 seconds
+	}, 10000); //ping client every 10 seconds
 	return next();
 });
 
@@ -110,7 +110,7 @@ app.ws('/', function (ws, req) {
 			getRandomCardEvent.Action(json, ws, mysqlConnection);
 		}else if (json.event === "logout") {
 			logoutEvent.Action(json, ws, req);
-		} else if (json.event === "ping") {
+		} else if (json.event === "pong") {
 			pingEvent.Action(json, ws);
 		} else if (json.event === "restoreSession") {
 			restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
