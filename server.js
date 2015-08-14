@@ -68,7 +68,7 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-	pingClient(3000, req);
+	pingClient(3000, res);
 });
 
 app.use(
