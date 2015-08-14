@@ -11,10 +11,16 @@ module.exports = {
 					throw err;
 				}
 				if (fields.length !== 0) {
+					
+					var pictureBuffer = new buffer(rows[0].picture);  //Transforming picture from blob binary array to base64 string
+					var pictureBase64 = buffer.toString('base64');
+					
+					console.log(pictureBase64);
+					
 					jsonReply = {
 						event: "getProfileCard",
 						cardname: rows[0].cardname,
-						picture: rows[0].picture,
+						picture: pictureBase64,
 						rank: rows[0].rank,
 						value: rows[0].value,
 						email: rows[0].email,
