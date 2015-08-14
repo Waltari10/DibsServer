@@ -18,7 +18,7 @@ module.exports = {
 					jsonReply = {
 						event: "getProfileCard",
 						cardname: rows[0].cardname,
-						picture: pictureBase64,
+						picture: rows[0].picture,
 						rank: rows[0].rank,
 						value: rows[0].value,
 						email: rows[0].email,
