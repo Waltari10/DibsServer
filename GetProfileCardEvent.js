@@ -13,7 +13,7 @@ module.exports = {
 				if (fields.length !== 0) {
 					
 					var pictureBuffer = new buffer(rows[0].picture);  //Transforming picture from blob binary array to base64 string
-					var pictureBase64 = buffer.toString('base64');
+					var pictureBase64 = pictureBuffer.toString('base64');
 					
 					console.log(pictureBase64);
 					
