@@ -81,7 +81,7 @@ app.use(
 }));
 
 app.ws('/', function (ws, req) {
-	pingClient(3000);
+	pingClient(3000, ws);
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
@@ -108,7 +108,7 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function pingClient(time) {
+function pingClient(time, ws) {
 	setInterval(function() {
 		console.log("pinging client");
 		var jsonReply = {
