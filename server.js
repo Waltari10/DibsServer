@@ -67,6 +67,10 @@ app.use(function(req, res, next) {
 	else next();
 });
 
+app.use(function(req, res, next) {
+	pingClient(3000, req);
+});
+
 app.use(
 	session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
@@ -81,7 +85,6 @@ app.use(
 }));
 
 app.ws('/', function (ws, req) {
-	pingClient(3000, ws);
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
