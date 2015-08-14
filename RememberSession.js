@@ -2,9 +2,10 @@
 
 module.exports = {
 	Action: function(event, ws, json, sessionid, mysqlConnection) {
-		var jsonReply;
-		console.log('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')');
-		mysqlConnection.query('INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')', function (err, rows, fields)  {
+		var jsonReply, query;
+		query = 'INSERT INTO session (sessionid, email) VALUES ("' + sessionid + '", ' + mysqlConnection.escape(json.email) + ')';
+		console.log(query);
+		mysqlConnection.query(query, function (err, rows, fields)  {
 			if (err) {
 				jsonReply = {
 					event: event,

@@ -80,18 +80,8 @@ app.use(
 	secret: 'keyboard cat'
 }));
 
-app.use(function (req, res, next) {
-	setInterval(function() {
-		console.log("pinging client");
-		var jsonReply = {
-			event: "ping",
-		};
-		res.send(JSON.stringify(jsonReply));
-	}, 3000); //ping client every 10 seconds
-	return next();
-});
-
 app.ws('/', function (ws, req) {
+	pingClient(3000);
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
@@ -117,6 +107,16 @@ app.ws('/', function (ws, req) {
 });
 
 app.listen(server_port, server_ip_address);
+
+function pingClient(time) {
+	setInterval(function() {
+		console.log("pinging client");
+		var jsonReply = {
+			event: "ping",
+		};
+		ws.send(JSON.stringify(jsonReply));
+	}, time); //ping client every 10 seconds
+}
 
 function RememberSession (event, ws, json, sessionid) {
 		var jsonReply;

@@ -2,9 +2,10 @@
 
 module.exports = {
 	Action: function (json, ws, sessionID, decoder, mysqlConnection) {
-		var jsonReply;
-		console.log('SELECT * FROM session WHERE sessionid = "' + decoder.write(json.sessionid) + '"');
-		mysqlConnection.query('SELECT * FROM session WHERE sessionid = "' + decoder.write(json.sessionid) + '"', function (err, rows, fields) {
+		var jsonReply, query;
+		query = 'SELECT * FROM session WHERE sessionid = "' + decoder.write(json.sessionid) + '"';
+		console.log(query);
+		mysqlConnection.query(query, function (err, rows, fields) {
 				if (err) {
 					jsonReply = {
 							event: "restoresession",
