@@ -87,7 +87,7 @@ app.use(function (req, res, next) {
 			event: "ping",
 		};
 		res.send(JSON.stringify(jsonReply));
-	}, 10000); //ping client every 10 seconds
+	}, 3000); //ping client every 10 seconds
 	return next();
 });
 
