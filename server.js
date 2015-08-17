@@ -85,6 +85,11 @@ app.use(
 app.ws('/', function (ws, req) {
 	//pingClient(3000, ws);
 	//console.log(req);
+	
+	ws.on('request' function () {
+		console.log("request");
+	});
+	
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
