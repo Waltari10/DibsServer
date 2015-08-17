@@ -63,15 +63,14 @@ function uuidFromBytes(rnd) {
 }
 
 app.use(function(req, res, next) {
+	console.log("app.use toobusy");
 	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience");
 	else next();
 });
 
-app.use(function(req, res, next) {
-	//
-});
-
 app.use(
+	console.log("app.use session");
+
 	session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
 	maxAge: null,
@@ -120,7 +119,7 @@ app.ws('/', function (ws, req) {
 
 app.listen(server_port, server_ip_address);
 
-function pingClient(time, ws) {
+/*function pingClient(time, ws) {
 	setInterval(function() {
 		console.log("pinging client");
 		var jsonReply = {
@@ -128,7 +127,7 @@ function pingClient(time, ws) {
 		};
 		ws.send(JSON.stringify(jsonReply));
 	}, time); //ping client every 10 seconds
-}
+}*/
 
 function RememberSession (event, ws, json, sessionid) {
 		var jsonReply;
