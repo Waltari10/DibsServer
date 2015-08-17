@@ -63,7 +63,6 @@ function uuidFromBytes(rnd) {
 }
 
 app.use(function(req, res, next) {
-	console.log("app.use toobusy");
 	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience");
 	else next();
 });
@@ -84,12 +83,12 @@ app.use(
 app.ws('/', function (ws, req) {
 	//pingClient(3000, ws);
 	
-	/*ws.on('connection', function (something) {
+	ws.on('connection', function (something) {
 		console.log("connection");
-		ws.send("rainbows and unicorns shitting rainbows");
+		ws.send("connection");
 		
 		
-	});*/
+	});
 	
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
