@@ -83,11 +83,16 @@ app.use(
 app.ws('/', function (ws, req) {
 	//pingClient(3000, ws);
 	
-	ws.on('connection', function (something) {
+	ws.on('connection', function () {
 		console.log("connection");
 		ws.send("connection");
 		
 		
+	});
+	
+	ws.on('open', function () {
+		console.log("open");
+		ws.send("open");
 	});
 	
 	ws.on('message', function (textChunk) {
