@@ -80,6 +80,13 @@ app.use(
 	secret: 'keyboard cat'
 }));
 
+
+app.get('/', function(req, res, next) {
+  res.send('Hello World!');
+  next();
+});
+
+
 app.ws('/', function (ws, req) {
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
