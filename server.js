@@ -69,8 +69,6 @@ app.use(function(req, res, next) {
 });
 
 app.use(
-	console.log("app.use session");
-
 	session({
 	cookie: { secure: false, maxAge: null },  //True requires ssl
 	maxAge: null,
