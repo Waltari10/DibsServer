@@ -81,6 +81,11 @@ app.use(
 	ping: false
 }));
 
+app.get('/', function(req, res, next){
+  console.log('get route', req.testing);
+  res.end();
+});
+
 app.ws('/', function (ws, req) {
 	//pingClient(3000, ws);
 	console.log(req);
