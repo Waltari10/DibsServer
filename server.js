@@ -77,8 +77,7 @@ app.use(
 	genid: function (req) {
 		return genUuid();
 	},
-	secret: 'keyboard cat',
-	ping: false
+	secret: 'keyboard cat'
 }));
 
 app.ws('/', function (ws, req) {
