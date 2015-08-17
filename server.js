@@ -63,7 +63,6 @@ function uuidFromBytes(rnd) {
 }
 
 app.use(function(req, res, next) {
-	res.send("test");
 	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience");
 	else next();
 });
@@ -83,33 +82,36 @@ app.use(
 }));
 
 app.ws('/', function (ws, req) {
-	//pingClient(3000, ws);
-	//console.log(req);
-	
-	ws.on('request', function () {
-		console.log("request");
-	});
-	
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
 		console.log(json.event);
-		if (json.event === "login") {
-			loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
-		} else if (json.event === "register") {
-			registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
-		} else if (json.event === "getProfileCard") {
-			getProfileCardEvent.Action(json, ws, mysqlConnection);
-		} else if (json.event === "setProfileCard"){
-			setProfileCardEvent.Action(json, ws, mysqlConnection);
-		}else if (json.event === "getRandomCard") {
-			getRandomCardEvent.Action(json, ws, mysqlConnection);
-		}else if (json.event === "logout") {
-			logoutEvent.Action(json, ws, req);
-		} else if (json.event === "pong") {
-			pingEvent.Action(json, ws);
-		} else if (json.event === "restoreSession") {
-			restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
+		
+		switch(json.event) {
+			case "login":
+				loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
+				break;
+			case "register":
+				registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
+				break;
+			case "getProfileCard":
+				getProfileCardEvent.Action(json, ws, mysqlConnection);
+				break;
+			case "setProfileCard":
+				setProfileCardEvent.Action(json, ws, mysqlConnection);
+				break;
+			case "getRandomCard":
+				getRandomCardEvent.Action(json, ws, mysqlConnection);
+				break;
+			case "logout":
+				logoutEvent.Action(json, ws, req);
+				break;
+			case "pong":
+				pingEvent.Action(json, ws);
+				break;
+			case "restoreSession":
+				restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
+				break;
 		}
 	});
 });
