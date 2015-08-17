@@ -63,6 +63,7 @@ function uuidFromBytes(rnd) {
 }
 
 app.use(function(req, res, next) {
+	res.send("test");
 	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience");
 	else next();
 });
@@ -80,11 +81,6 @@ app.use(
 	secret: 'keyboard cat',
 	ping: false
 }));
-
-app.get('/', function(req, res, next){
-  console.log('get route', req.testing);
-  res.end();
-});
 
 app.ws('/', function (ws, req) {
 	//pingClient(3000, ws);
