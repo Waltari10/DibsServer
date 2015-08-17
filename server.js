@@ -68,7 +68,7 @@ app.use(function(req, res, next) {
 });
 
 app.use(function(req, res, next) {
-	pingClient(3000, res);
+	//
 });
 
 app.use(
@@ -85,6 +85,14 @@ app.use(
 }));
 
 app.ws('/', function (ws, req) {
+	//pingClient(3000, ws);
+	
+	ws.on('connection', function (something) {
+		ws.send("rainbows and unicorns shitting rainbows");
+		
+		
+	});
+	
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
