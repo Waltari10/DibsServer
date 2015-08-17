@@ -86,7 +86,7 @@ app.ws('/', function (ws, req) {
 	//pingClient(3000, ws);
 	//console.log(req);
 	
-	ws.on('request' function () {
+	ws.on('request', function () {
 		console.log("request");
 	});
 	
