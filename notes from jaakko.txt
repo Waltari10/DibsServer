@@ -1,0 +1,15 @@
+long polling fallback toiminto. Käyttää eri ytimiä. Sticky session auttaa
+
+Cluster Node.js aiheuttaa
+
+Taulukko jossa kaikki aktiiviset yhteydet. Käy läpi kaikki ja lähettää pingin
+
+status flag
+
+for loop blockkaa (sync)
+
+for each ei blockkaa (async)
+
+Nevalaisen Seppo Anssi Gröhn
+
+Keep alive pingaus protokolla tasolla. Saattaa olla valmiina? On varmasti jollakin tasolla. Korkeintaan pingin mittaukseen

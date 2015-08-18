@@ -62,8 +62,8 @@ function uuidFromBytes(rnd) {
 	return rnd.join('-');
 }
 
-app.use(function(req, res, next) {
-	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience");
+app.use(function(req, res, next) { //HTTP
+	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience"); //Client doesn't receive message
 	else next();
 });
 
@@ -82,12 +82,29 @@ app.use(
 
 
 app.get('/', function(req, res, next) {
-  res.send('Hello World!');
+  res.send('Hello World!'); //Client doesn't receive message
   next();
 });
 
+//app.on('upgrade')
 
-app.ws('/', function (ws, req) {
+app.ws('/', function (ws, req) { //Websocket yhteys
+
+	ws.on('upgrade', function() {
+		console.log('connected');
+		ws.send(Date.now().toString(), {mask: true});
+	});
+
+	ws.on('connect', function() {
+		console.log('connected');
+		ws.send(Date.now().toString(), {mask: true});
+	});
+
+	ws.on('open', function() {
+		console.log('open');
+		ws.send(Date.now().toString(), {mask: true});
+	});
+
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
