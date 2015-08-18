@@ -13,3 +13,12 @@ for each ei blockkaa (async)
 Nevalaisen Seppo Anssi Gröhn
 
 Keep alive pingaus protokolla tasolla. Saattaa olla valmiina? On varmasti jollakin tasolla. Korkeintaan pingin mittaukseen
+
+https://nodejs.org/api/http.html
+https://github.com/websockets/ws
+https://github.com/nodebooks/socketio-openshift-example
+http://stackoverflow.com/questions/32008332/load-sprite-from-a-base64-string-which-came-from-a-websocket
+https://en.wikipedia.org/wiki/HTTP/1.1_Upgrade_header
+http://stackoverflow.com/questions/32043509/what-websocket-events-exist
+https://github.com/Unitech/pm2
+https://nodejs.org/api/cluster.html
