@@ -2,7 +2,9 @@
 
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
-		var require('/array-sugar'), jsonReply, cardAmount;
+		require('/array-sugar');
+		var jsonReply;
+		var cardAmount;
 		try {
 			console.log("SELECT COUNT(*) AS count from card");
 			mysqlConnection.query('SELECT COUNT(*) AS count from card', function (err, result) {
