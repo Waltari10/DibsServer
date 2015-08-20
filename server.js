@@ -130,9 +130,9 @@ app.ws('/', function (ws, req) { //Websocket yhteys
 		ws.send(Date.now().toString());
 	});
 	
-	ws.on('close', function() {
-		console.log('close');
-		ws.send(Date.now().toString());
+	ws.on('close', function() { //Cant send stuff cus iz closed dummy
+		console.log('close yay');
+		//ws.send(Date.now().toString());
 	});
 
 	ws.on('message', function (textChunk) {
