@@ -2,7 +2,7 @@
 
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
-		require('/array-sugar');
+		require('array-sugar');
 		var jsonReply;
 		var cardAmount;
 		try {
