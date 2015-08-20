@@ -88,21 +88,33 @@ app.get('/', function(req, res, next) {
 
 //app.on('upgrade')
 
-app.ws('connection', function (ws, req) { //Websocket yhteys
+app.ws('/', function (ws, req) { //Websocket yhteys
+
+	//ws.send(Date.now().toString(), {mask: true});
 
 	ws.on('upgrade', function() {
 		console.log('upgrade');
-		ws.send(Date.now().toString(), {mask: true});
+		ws.send(Date.now().toString());
 	});
 
+	ws.on('connection', function() {
+		console.log('connection');
+		ws.send(Date.now().toString());
+	});
+	
 	ws.on('connect', function() {
 		console.log('connected');
-		ws.send(Date.now().toString(), {mask: true});
+		ws.send(Date.now().toString());
 	});
 
 	ws.on('open', function() {
 		console.log('open');
-		ws.send(Date.now().toString(), {mask: true});
+		ws.send(Date.now().toString());
+	});
+	
+	ws.on('close', function() {
+		console.log('close');
+		ws.send(Date.now().toString());
 	});
 
 	ws.on('message', function (textChunk) {
