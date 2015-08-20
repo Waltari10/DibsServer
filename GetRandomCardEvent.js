@@ -17,10 +17,11 @@ module.exports = {
 				}
 			});
 			
+			console.log("cardAmount: " + cardAmount);
 			var rand = Math.floor((Math.random() * cardAmount ) + 1 ); //Rand number between 1 and amount of cards
 			console.log("rand: " + rand);
 			
-			while (json.cardIds.contains(rand)) {
+			while (json.cardIds.contains(rand)) { //Cannot call method contains of undefined
 				console.log("rand: " + rand);
 				rand = Math.floor((Math.random() * cardAmount ) + 1 );
 			}
