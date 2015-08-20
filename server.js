@@ -86,7 +86,25 @@ app.get('/', function(req, res, next) {
   next();
 });
 
-//app.on('upgrade')
+app.on('upgrade', function (ws, req) {
+	console.log('upgrade');
+		ws.send(Date.now().toString());
+});
+
+app.on('connection', function (ws, req) {
+	console.log('connection');
+		ws.send(Date.now().toString());
+});
+
+app.on('connect', function (ws, req) {
+	console.log('connect');
+		ws.send(Date.now().toString());
+});
+
+app.on('connected', function (ws, req) {
+	console.log('connected');
+		ws.send(Date.now().toString());
+});
 
 app.ws('/', function (ws, req) { //Websocket yhteys
 
