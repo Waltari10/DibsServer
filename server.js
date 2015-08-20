@@ -88,10 +88,10 @@ app.get('/', function(req, res, next) {
 
 //app.on('upgrade')
 
-app.ws('/', function (ws, req) { //Websocket yhteys
+app.ws('connection', function (ws, req) { //Websocket yhteys
 
 	ws.on('upgrade', function() {
-		console.log('connected');
+		console.log('upgrade');
 		ws.send(Date.now().toString(), {mask: true});
 	});
 
