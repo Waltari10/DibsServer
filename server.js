@@ -86,53 +86,9 @@ app.get('/', function(req, res, next) {
   next();
 });
 
-app.on('upgrade', function (ws, req) {
-	console.log('upgrade');
-		ws.send(Date.now().toString());
-});
-
-app.on('connection', function (ws, req) {
-	console.log('connection');
-		ws.send(Date.now().toString());
-});
-
-app.on('connect', function (ws, req) {
-	console.log('connect');
-		ws.send(Date.now().toString());
-});
-
-app.on('connected', function (ws, req) {
-	console.log('connected');
-		ws.send(Date.now().toString());
-});
-
 app.ws('/', function (ws, req) { //Websocket yhteys
-
-	//ws.send(Date.now().toString(), {mask: true});
-
-	ws.on('upgrade', function() {
-		console.log('upgrade');
-		ws.send(Date.now().toString());
-	});
-
-	ws.on('connection', function() {
-		console.log('connection');
-		ws.send(Date.now().toString());
-	});
-	
-	ws.on('connect', function() {
-		console.log('connected');
-		ws.send(Date.now().toString());
-	});
-
-	ws.on('open', function() {
-		console.log('open');
-		ws.send(Date.now().toString());
-	});
-	
 	ws.on('close', function() { //Cant send stuff cus iz closed dummy
-		console.log('close yay');
-		//ws.send(Date.now().toString());
+		console.log('closed connection');
 	});
 
 	ws.on('message', function (textChunk) {
