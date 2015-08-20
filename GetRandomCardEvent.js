@@ -2,11 +2,7 @@
 
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
-		
-		var Type = require('type-of-is');
-		
-		var jsonReply;
-		var cardAmount;
+		var require('/array-sugar'), jsonReply, cardAmount;
 		try {
 			console.log("SELECT COUNT(*) AS count from card");
 			mysqlConnection.query('SELECT COUNT(*) AS count from card', function (err, result) {
@@ -20,8 +16,9 @@ module.exports = {
 			});
 			
 			var rand = Math.floor((Math.random() * cardAmount ) + 1 ); //Rand number between 1 and amount of cards
+			console.log("rand: " + rand);
 			
-			while (contains(json.cardIds, rand)) {
+			while (json.cardIds.contains(rand)) {
 				console.log("rand: " + rand);
 				rand = Math.floor((Math.random() * cardAmount ) + 1 );
 			}
@@ -48,7 +45,6 @@ module.exports = {
 						console.log("stats: " + result[0].stats);
 						console.log("email: " + result[0].email);
 						
-						
 						console.log(JSON.stringify(jsonReply));
 						ws.send(JSON.stringify(jsonReply));
 					}
@@ -56,15 +52,6 @@ module.exports = {
 
 				} catch (err) {
 			console.log(err);
-		}
-		
-	function contains(a, obj) {
-		for (var i = 0; i < a.length; i++) {
-			if (a[i] === obj) {
-				return true;
-			}
-		}
-		return false;
 		}
 	}
 };
