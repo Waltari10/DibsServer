@@ -16,7 +16,7 @@ module.exports = {
 					console.log(result);
 					cardAmount = result.length;
 					console.log(cardAmount);
-					var cardIds;
+					var cardIds = [];
 					result.forEach(function(item) {
 						console.log(item.idcard);
 							cardIds.push(item.idcard);
