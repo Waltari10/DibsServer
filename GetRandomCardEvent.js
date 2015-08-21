@@ -16,6 +16,14 @@ module.exports = {
 					console.log(result);
 					cardAmount = result.length;
 					console.log(cardAmount);
+					var cardIds;
+					result.forEach(function(item) {
+						console.log(item);
+							cardIds.Add(item);
+						
+						} );
+					console.log(item);
+					
 				}
 			});
 			
