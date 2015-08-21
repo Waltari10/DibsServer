@@ -14,12 +14,13 @@ module.exports = {
 					jsonReply = {
 						event: "getProfileCard",
 						cardname: rows[0].cardname,
-						picture: rows[0].picture,
 						rank: rows[0].rank,
 						value: rows[0].value,
 						email: rows[0].email,
 						description: rows[0].description,
-						color: rows[0].color
+						color: rows[0].color,
+						picture: rows[0].picture
+						
 					};
 					console.log(JSON.stringify(jsonReply));
 					ws.send(JSON.stringify(jsonReply));
