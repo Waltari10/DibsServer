@@ -2,7 +2,6 @@
 
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
-		require('array-sugar');
 		var jsonReply, cardAmount, query, rand;
 		var cardIds = [];
 		try {

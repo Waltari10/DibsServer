@@ -26,6 +26,8 @@ var StringDecoder			= require('string_decoder').StringDecoder,  //Package for de
 	toobusy 				= require('toobusy-js'),
 	setProfileCardEvent		= require('./SetProfileCardEvent.js');
 
+	require('array-sugar');
+
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
 console.log("mysql_user: " + mysql_user);
