@@ -24,7 +24,7 @@ module.exports = {
 					rand = Math.floor((Math.random() * cardIds.length));
 					
 					console.log("json.seencards: ");
-					console.log(json.seencards);
+					console.log(json.seenCards);
 					console.log("cardIds: ");
 					console.log(cardIds);
 					
