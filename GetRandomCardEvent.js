@@ -3,32 +3,25 @@
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
 		require('array-sugar');
-		var jsonReply;
+		var jsonReply, cardAmount, query;
 		var cardAmount;
 		try {
-			console.log("SELECT COUNT(*) AS count from card");
-			mysqlConnection.query('SELECT COUNT(*) AS count from card', function (err, result) {
+			query = "SELECT idcard FROM card";
+			console.log(query);
+			mysqlConnection.query(query, function (err, result) {
 				if (err) {
 					throw err;
 				} 
 				else {
-					cardAmount = result[0].count;
-					console.log("card count is as: " + result[0].count);
+					console.log(result);
+					//cardAmount = result[0].count;
+					//console.log("card count is as: " + result[0].count);
 				}
 			});
 			
-			console.log("cardAmount: " + cardAmount);
-			var rand = Math.floor((Math.random() * cardAmount ) + 1 ); //Rand number between 1 and amount of cards
-			console.log("rand: " + rand);
-			
-			while (json.cardIds.contains(rand)) { //Cannot call method contains of undefined
-				console.log("rand: " + rand);
-				rand = Math.floor((Math.random() * cardAmount ) + 1 );
-			}
-			
-			
-			console.log("SELECT 1 FROM card WHERE idcard = " + rand);
-			mysqlConnection.query("SELECT * FROM card WHERE idcard = " + rand, function (err, result) {
+		/*	query = "SELECT 1 FROM card WHERE idcard = " + rand;
+			console.log(query);
+			mysqlConnection.query(query , function (err, result) {
 					if (err) {
 						throw err;
 					} 
@@ -51,9 +44,9 @@ module.exports = {
 						console.log(JSON.stringify(jsonReply));
 						ws.send(JSON.stringify(jsonReply));
 					}
-				});
+				});*/
 
-				} catch (err) {
+		} catch (err) {
 			console.log(err);
 		}
 	}
