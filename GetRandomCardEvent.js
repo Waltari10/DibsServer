@@ -14,7 +14,6 @@ module.exports = {
 				} 
 				else {
 					cardAmount = result.length;
-					
 					result.forEach(function(item) {
 							cardIds.push(item.idcard);
 						} );
@@ -22,8 +21,6 @@ module.exports = {
 					
 				}
 			});
-			
-			
 			
 			if (json.seenCards === "") {
 				rand = Math.floor((Math.random() * cardIds.length));
@@ -39,7 +36,7 @@ module.exports = {
 			
 			query = "SELECT 1 FROM card WHERE idcard = " + rand;
 			console.log(query);
-			mysqlConnection.query(query , function (err, result) {
+			mysqlConnection.query(query , function (err, rows, fields) {
 					if (err) {
 						throw err;
 					} 
@@ -55,12 +52,6 @@ module.exports = {
 							color: rows[0].color,
 							idcard: rows[0].idcard
 						};
-						
-						console.log("idcard: " + result[0].idcard);
-						console.log("cardname: " + result[0].cardname);
-						console.log("picture: " + result[0].picture);
-						console.log("stats: " + result[0].stats);
-						console.log("email: " + result[0].email);
 						
 						console.log(JSON.stringify(jsonReply));
 						ws.send(JSON.stringify(jsonReply));
