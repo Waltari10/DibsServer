@@ -22,7 +22,7 @@ module.exports = {
 							cardIds.push(item.idcard);
 						
 						} );
-					console.log(item);
+					console.log(cardIds);
 					
 				}
 			});
