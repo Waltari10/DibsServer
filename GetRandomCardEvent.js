@@ -14,8 +14,8 @@ module.exports = {
 				} 
 				else {
 					console.log(result);
-					//cardAmount = result[0].count;
-					//console.log("card count is as: " + result[0].count);
+					cardAmount = result.length;
+					console.log(cardAmount);
 				}
 			});
 			
