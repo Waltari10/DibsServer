@@ -19,6 +19,7 @@ module.exports = {
 						cardIds.push(result[i].idcard);
 					}
 					
+					console.log(json.seenCards);
 					if (json.seenCards === "") {
 						rand = Math.floor((Math.random() * cardIds.length));
 						getCardById(cardIds);
