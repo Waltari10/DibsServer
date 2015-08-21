@@ -4,7 +4,7 @@ module.exports = {
 	Action: function(json, ws, mysqlConnection) {
 		require('array-sugar');
 		var jsonReply, cardAmount, query, rand;
-		
+		var cardIds = [];
 		try {
 			query = "SELECT idcard FROM card";
 			console.log(query);
@@ -14,10 +14,9 @@ module.exports = {
 				} 
 				else {
 					cardAmount = result.length;
-					var cardIds = [];
+					
 					result.forEach(function(item) {
 							cardIds.push(item.idcard);
-						
 						} );
 					console.log(cardIds);
 					
