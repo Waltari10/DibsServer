@@ -48,19 +48,16 @@ module.exports = {
 					throw err;
 				} 
 				else {
-					console.log("sql rows: ");
-					console.log(rows);
-					
 					jsonReply = {
 						event: "getRandomCard",
 						cardname: rows[0].cardname,
-						picture: rows[0].picture,
 						rank: rows[0].rank,
 						value: rows[0].value,
 						email: rows[0].email,
 						description: rows[0].description,
 						color: rows[0].color,
-						idcard: rows[0].idcard
+						idcard: rows[0].idcard,
+						picture: rows[0].picture
 					};
 					
 					console.log(JSON.stringify(jsonReply));
