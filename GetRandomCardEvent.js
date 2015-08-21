@@ -27,14 +27,14 @@ module.exports = {
 			
 			
 			if (json.seenCards === "") {
-				
-				
-			} else {
 				rand = Math.floor((Math.random() * cardIds.length));
 
 				console.log("rand: " + rand);
 
 				console.log("cardIds[rand]: " + cardIds[rand]);
+				
+			} else {
+				
 				
 			}
 			
