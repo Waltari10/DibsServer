@@ -3,7 +3,7 @@
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
 		var jsonReply, cardAmount, query, rand;
-		console.log(Type.of(json.seenCards));var Type = require('type-of-is');
+		console.log(Type.of(json.seenCards));
 		var cardIds = [];
 		try {
 			query = "SELECT idcard FROM card";
@@ -28,6 +28,7 @@ module.exports = {
 					console.log(json.seenCards);
 					console.log("cardIds: ");
 					console.log(cardIds);
+					var Type = require('type-of-is');
 					console.log(Type.of(json.seenCards));
 					
 					if (json.seenCards.length !== 0 || json.seenCards !== "") {
