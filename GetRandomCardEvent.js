@@ -18,14 +18,16 @@ module.exports = {
 					console.log(cardAmount);
 					var cardIds;
 					result.forEach(function(item) {
-						console.log(item);
-							cardIds.Add(item);
+						console.log(item.idcard);
+							cardIds.push(item.idcard);
 						
 						} );
 					console.log(item);
 					
 				}
 			});
+			
+			//if (jsonReply.cardIds)
 			
 		/*	query = "SELECT 1 FROM card WHERE idcard = " + rand;
 			console.log(query);
