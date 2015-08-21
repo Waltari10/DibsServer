@@ -23,6 +23,7 @@ module.exports = {
 			});
 			
 			if (json.seenCards === "") {
+				console.log(cardIds);
 				rand = Math.floor((Math.random() * cardIds.length));
 
 				console.log("rand: " + rand);
