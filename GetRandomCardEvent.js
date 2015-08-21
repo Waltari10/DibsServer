@@ -45,7 +45,8 @@ module.exports = {
 					throw err;
 				} 
 				else {
-					console.log("sql rows: " + rows);
+					console.log("sql rows: ");
+					console.log(rows);
 					
 					jsonReply = {
 						event: "getRandomCard",
