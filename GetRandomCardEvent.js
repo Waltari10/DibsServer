@@ -35,9 +35,11 @@ module.exports = {
 			console.log(err);
 		}
 		
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		function getCardById(cardIds) {
 			
-			query = "SELECT 1 FROM card WHERE idcard = " + cardIds[rand];
+			query = "SELECT * FROM card WHERE idcard = " + cardIds[rand];
 			console.log(query);
 			
 			mysqlConnection.query(query , function (err, rows, fields) {
