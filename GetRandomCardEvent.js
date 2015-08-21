@@ -23,9 +23,16 @@ module.exports = {
 					
 					rand = Math.floor((Math.random() * cardIds.length));
 					
+					console.log("json.seencards: ");
+					console.log(json.seencards);
+					console.log("cardIds: ");
+					console.log(cardIds);
+					
 					if (!json.seenCards === "") {
+						console.log("if triggered");
 						while(json.seenCards.contains(cardIds[rand])) {
 							rand = Math.floor((Math.random() * cardIds.length));
+							console.log(rand);
 						}
 					}
 					getCardById();
