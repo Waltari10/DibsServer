@@ -19,22 +19,15 @@ module.exports = {
 						cardIds.push(result[i].idcard);
 					}
 					
-					console.log(json.seenCards);
-					
-					
 					rand = Math.floor((Math.random() * cardIds.length));
 					
-					console.log("json.seencards: ");
-					console.log(json.seenCards);
-					console.log("cardIds: ");
-					console.log(cardIds);
-					console.log(json.seenCards);
-					console.log(Type.of(json.seenCards));
-					if (json.seenCards.length !== 0 || json.seenCards !== "") {
-						console.log("if triggered");
-						while(json.seenCards.contains(cardIds[rand])) {
-							rand = Math.floor((Math.random() * cardIds.length));
-							console.log(rand);
+					if (json.seenCards.length < cardIds.length) {  //If user has already seen all cards just give him an old one at random
+						if (json.seenCards.length !== 0 || json.seenCards !== "") {
+							console.log("if triggered");
+							while(json.seenCards.contains(cardIds[rand])) {
+								rand = Math.floor((Math.random() * cardIds.length));
+								console.log(rand);
+							}
 						}
 					}
 					getCardById();
