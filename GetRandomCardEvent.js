@@ -26,7 +26,7 @@ module.exports = {
 			
 			
 			
-			if (json.cardIds === "") {
+			if (json.seenCards === "") {
 				
 				
 			} else {
