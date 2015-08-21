@@ -20,14 +20,15 @@ module.exports = {
 					}
 					
 					console.log(json.seenCards);
-					if (json.seenCards === "") {
-						rand = Math.floor((Math.random() * cardIds.length));
-						getCardById(cardIds);
-						
-					} else {
-						
-						
+					
+					rand = Math.floor((Math.random() * cardIds.length));
+					
+					if (!json.seenCards === "") {
+						while(json.seenCards.contains(cardIds[rand])) {
+							rand = Math.floor((Math.random() * cardIds.length));
+						}
 					}
+					getCardById();
 					
 					
 				}
@@ -38,7 +39,7 @@ module.exports = {
 		
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-		function getCardById(cardIds) {
+		function getCardById() {
 			
 			query = "SELECT * FROM card WHERE idcard = " + cardIds[rand];
 			console.log(query);
