@@ -3,8 +3,8 @@
 module.exports = {
 	Action: function(json, ws, mysqlConnection) {
 		require('array-sugar');
-		var jsonReply, cardAmount, query;
-		var cardAmount;
+		var jsonReply, cardAmount, query, rand;
+		
 		try {
 			query = "SELECT idcard FROM card";
 			console.log(query);
@@ -13,12 +13,9 @@ module.exports = {
 					throw err;
 				} 
 				else {
-					console.log(result);
 					cardAmount = result.length;
-					console.log(cardAmount);
 					var cardIds = [];
 					result.forEach(function(item) {
-						console.log(item.idcard);
 							cardIds.push(item.idcard);
 						
 						} );
@@ -27,9 +24,21 @@ module.exports = {
 				}
 			});
 			
-			//if (jsonReply.cardIds)
 			
-		/*	query = "SELECT 1 FROM card WHERE idcard = " + rand;
+			
+			if (jsonReply.cardIds === "") {
+				
+				
+			} else {
+				rand = Math.floor((Math.random() * cardIds.length));
+
+				console.log("rand: " + rand);
+
+				console.log("cardIds[rand]: " + cardIds[rand]);
+				
+			}
+			
+			query = "SELECT 1 FROM card WHERE idcard = " + rand;
 			console.log(query);
 			mysqlConnection.query(query , function (err, result) {
 					if (err) {
@@ -38,11 +47,14 @@ module.exports = {
 					else {
 						jsonReply = {
 							event: "getRandomCard",
-							idcard: result[0].idcard,
-							cardname: result[0].cardname,
-							picture: result[0].picture,
-							stats: result[0].stats,
-							email: result[0].email
+							cardname: rows[0].cardname,
+							picture: rows[0].picture,
+							rank: rows[0].rank,
+							value: rows[0].value,
+							email: rows[0].email,
+							description: rows[0].description,
+							color: rows[0].color,
+							idcard: rows[0].idcard
 						};
 						
 						console.log("idcard: " + result[0].idcard);
@@ -54,7 +66,7 @@ module.exports = {
 						console.log(JSON.stringify(jsonReply));
 						ws.send(JSON.stringify(jsonReply));
 					}
-				});*/
+				});
 
 		} catch (err) {
 			console.log(err);
