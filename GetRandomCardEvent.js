@@ -21,6 +21,7 @@ module.exports = {
 					
 					console.log(json.seenCards);
 					
+					
 					rand = Math.floor((Math.random() * cardIds.length));
 					
 					console.log("json.seencards: ");
@@ -28,7 +29,7 @@ module.exports = {
 					console.log("cardIds: ");
 					console.log(cardIds);
 					
-					if (!json.seenCards === "") {
+					if (json.seenCards.length !== 0 || json.seenCards !== "") {
 						console.log("if triggered");
 						while(json.seenCards.contains(cardIds[rand])) {
 							rand = Math.floor((Math.random() * cardIds.length));
