@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-	Action: function(json, ws, mysqlConnection) {
+	Action: function(json, ws, mysqlConnection, Type) {
 		var jsonReply, cardAmount, query, rand;
 		console.log(Type.of(json.seenCards));
 		var cardIds = [];
@@ -28,9 +28,8 @@ module.exports = {
 					console.log(json.seenCards);
 					console.log("cardIds: ");
 					console.log(cardIds);
-					var Type = require('type-of-is');
+					console.log(json.seenCards);
 					console.log(Type.of(json.seenCards));
-					
 					if (json.seenCards.length !== 0 || json.seenCards !== "") {
 						console.log("if triggered");
 						while(json.seenCards.contains(cardIds[rand])) {

@@ -24,7 +24,8 @@ var StringDecoder			= require('string_decoder').StringDecoder,  //Package for de
 	pingEvent				= require('./PingEvent.js'),
 	getRandomCardEvent 		= require('./GetRandomCardEvent'),
 	toobusy 				= require('toobusy-js'),
-	setProfileCardEvent		= require('./SetProfileCardEvent.js');
+	setProfileCardEvent		= require('./SetProfileCardEvent.js'),
+	Type					= require('type-of-is');
 
 	require('array-sugar');
 
@@ -112,7 +113,7 @@ app.ws('/', function (ws, req) { //Websocket yhteys
 				setProfileCardEvent.Action(json, ws, mysqlConnection);
 				break;
 			case "getRandomCard":
-				getRandomCardEvent.Action(json, ws, mysqlConnection);
+				getRandomCardEvent.Action(json, ws, mysqlConnection, Type);
 				break;
 			case "logout":
 				logoutEvent.Action(json, ws, req);
