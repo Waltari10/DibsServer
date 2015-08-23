@@ -65,6 +65,10 @@ function uuidFromBytes(rnd) {
 	return rnd.join('-');
 }
 
+expressWs.getWss().on('connection', function(ws) {
+	console.log('connection open');
+});
+
 app.use(function(req, res, next) { //HTTP
 	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience"); //Client doesn't receive message
 	else next();
@@ -103,6 +107,8 @@ app.ws('/', function (ws, req) { //Websocket yhteys
 		console.log("open");
 	});
 
+	
+	
 	ws.on('message', function (textChunk) {
 		var message = decoder.write(textChunk), json = JSON.parse(message);
 		console.log(message);
@@ -138,16 +144,6 @@ app.ws('/', function (ws, req) { //Websocket yhteys
 });
 
 app.listen(server_port, server_ip_address);
-
-/*function pingClient(time, ws) {
-	setInterval(function() {
-		console.log("pinging client");
-		var jsonReply = {
-			event: "ping",
-		};
-		ws.send(JSON.stringify(jsonReply));
-	}, time); //ping client every 10 seconds
-}*/
 
 function RememberSession (event, ws, json, sessionid) {
 		var jsonReply;
