@@ -65,7 +65,7 @@ function uuidFromBytes(rnd) {
 	return rnd.join('-');
 }
 
-expressWs.getWss().on('connection', function(ws) {
+expressWs.getWss().on('connection', function() {
 	console.log('connection open');
 });
 
