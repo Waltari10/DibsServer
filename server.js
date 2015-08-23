@@ -65,9 +65,9 @@ function uuidFromBytes(rnd) {
 	return rnd.join('-');
 }
 
-expressWs.getWss().on('connection', function() {
+/*expressWs.getWss().on('connection', function() {
 	console.log('connection open');
-});
+});*/
 
 app.use(function(req, res, next) { //HTTP
 	if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience"); //Client doesn't receive message
