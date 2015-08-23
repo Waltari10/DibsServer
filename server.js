@@ -90,8 +90,17 @@ app.get('/', function(req, res, next) {
 });
 
 app.ws('/', function (ws, req) { //Websocket yhteys
+
 	ws.on('close', function() { //Cant send stuff cus iz closed dummy
 		console.log('closed connection');
+	});
+	
+	ws.on('error', function() {
+		console.log("error");
+	});
+	
+	ws.on('open', function() {
+		console.log("open");
 	});
 
 	ws.on('message', function (textChunk) {
