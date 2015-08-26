@@ -5,7 +5,7 @@
   "main": "server.js",
   "dependencies": {
 	"express-session": "^1.11.3",
-	"express-ws": "^0.2.6",
+	"express-ws": "^1.0.0-rc.1",
     "bcrypt": "^0.8.3",
     "express": "^4.13.0",
     "mysql": "^2.7.0",
