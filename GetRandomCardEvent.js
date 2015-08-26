@@ -1,9 +1,8 @@
 "use strict";
 
 module.exports = {
-	Action: function(json, ws, mysqlConnection, Type) {
+	Action: function(json, ws, mysqlConnection) {
 		var jsonReply, cardAmount, query, rand;
-		console.log(Type.of(json.seenCards));
 		var cardIds = [];
 		try {
 			query = "SELECT idcard FROM card";
@@ -14,16 +13,13 @@ module.exports = {
 				} 
 				else {
 					cardAmount = result.length;
-					
 					for (var i = 0; i < result.length; i++) {
 						cardIds.push(result[i].idcard);
 					}
-					
 					rand = Math.floor((Math.random() * cardIds.length));
 					
 					if (json.seenCards.length < cardIds.length) {  //If user has already seen all cards just give him an old one at random
 						if (json.seenCards.length !== 0 || json.seenCards !== "") {
-							console.log("if triggered");
 							while(json.seenCards.contains(cardIds[rand])) {
 								rand = Math.floor((Math.random() * cardIds.length));
 								console.log(rand);

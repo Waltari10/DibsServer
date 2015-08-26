@@ -8,7 +8,12 @@ module.exports = {
 			console.log(query);
 			mysqlConnection.query(query, function (err, rows, fields) {
 				if (err) {
-					throw err;
+					jsonReply = {
+						event: "getProfileCard",
+						error: "server error on getCard"
+						};
+					ws.send(JSON.stringify(jsonReply));
+					console.log(err);
 				}
 				if (fields.length !== 0) {
 					jsonReply = {
