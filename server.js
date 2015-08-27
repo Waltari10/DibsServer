@@ -81,7 +81,7 @@ if (cluster.isMaster) {
 		if (worker.suicide === true) {
 			console.log('worker suicide');
 		}
-	//	cluster.fork();
+		cluster.fork();
 	});
 
 } else {
