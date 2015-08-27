@@ -77,7 +77,11 @@ if (cluster.isMaster) {
 
 	cluster.on('exit', function(worker) {
 		console.error('exit!');
-		cluster.fork();
+		
+		if (worker.suicide === true) {
+			console.log('worker suicide');
+		}
+	//	cluster.fork();
 	});
 
 } else {
