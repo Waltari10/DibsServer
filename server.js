@@ -44,8 +44,13 @@ var	cluster 				= require('cluster'),
 	
 if (cluster.isMaster) {
 	
+	var numCPUs = require('os').cpus().length;
+	console.log(numCPUs);
 	cluster.fork();
-	cluster.fork();
+	
+	for (var i = 1; i < numCPUs; i++) {
+		cluster.fork();
+	}
 
 	cluster.on('exit', function(worker) {
 		console.error('exit!');
