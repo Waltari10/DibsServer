@@ -27,7 +27,7 @@ module.exports = {
 						picture: rows[0].picture
 						
 					};
-					console.log(JSON.stringify(jsonReply));
+					//console.log(JSON.stringify(jsonReply));
 					ws.send(JSON.stringify(jsonReply));
 				} else { //ProfileCard with given email doesn't exist
 					jsonReply = {

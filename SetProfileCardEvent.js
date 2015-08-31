@@ -4,9 +4,6 @@ module.exports = {
 		Action: function(json, ws, mysqlConnection) {
 		var query, jsonReply;
 		try {
-			console.log("Making new profile card");
-			console.log(json.color);
-			
 			query = 'INSERT INTO card (cardname, picture, rank, value, email, description, color, profilecard) VALUES (' + mysqlConnection.escape(json.cardname) + ', ' + mysqlConnection.escape(json.picture) + ', ' + mysqlConnection.escape(json.rank) + ', ' + mysqlConnection.escape(json.value) + ', ' + mysqlConnection.escape(json.email) + ', ' + mysqlConnection.escape(json.description) + ', "' + mysqlConnection.escape(json.color) + '", ' + 1 + ')';
 			console.log(query);
 			mysqlConnection.query(query, function (err, result) {

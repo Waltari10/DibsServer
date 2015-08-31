@@ -25,7 +25,7 @@ module.exports = {
 							ws.send(JSON.stringify(jsonReply));
 							throw err;
 						} else {
-							new RememberSession("register", ws, json, req.sessionID);
+							new RememberSession("register", ws, json, req.sessionID, mysqlConnection);
 							jsonReply = {
 								event: "register",
 								email: json.email,

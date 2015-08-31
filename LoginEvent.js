@@ -38,7 +38,7 @@ module.exports = {
 							};
 						}
 						ws.send(JSON.stringify(jsonReply));
-						new RememberSession("login", ws, json, req.sessionID);
+						new RememberSession("login", ws, json, req.sessionID, mysqlConnection);
 						});
 					} else {
 						jsonReply = {
