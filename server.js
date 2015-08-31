@@ -65,6 +65,8 @@ var StringDecoder		= require('string_decoder').StringDecoder,  //Package for dec
 	setProfileCardEvent		= require('./SetProfileCardEvent.js'),
 	Type					= require('type-of-is');
 	
+require('array-sugar');
+	
 console.log("ip: " + server_ip_address + ":" + server_port);
 console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
 console.log("mysql_user: " + mysql_user);
