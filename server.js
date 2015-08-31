@@ -38,36 +38,9 @@ function RememberSession (event, ws, json, sessionid) {
 	});
 }
 
-var StringDecoder			= require('string_decoder').StringDecoder,  //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
-	bcrypt					= require('bcrypt'),
-	mysql					= require('mysql'),
-	express					= require('express'),
-	session					= require('express-session'),
-	crypto					= require('crypto'),
-	server_port				= process.env.OPENSHIFT_NODEJS_PORT || 8080,
-	server_ip_address		= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
-	mysql_port				= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080,
-	mysql_host				= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1',
-	mysql_user				= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root',
-	mysql_database			= 'dibsserver',
-	decoder					= new StringDecoder('utf8'), //Client send UTF8 buffer which this is used to decode
-	app						= express(),
-	expressWs				= require('express-ws')(app),
-	loginEvent				= require('./LoginEvent.js'),
-	restoreSessionEvent		= require('./RestoreSessionEvent.js'),
-	setCardEvent			= require('./SetCardEvent.js'),
-	getProfileCardEvent		= require('./GetProfileCardEvent.js'),
-	registerEvent			= require('./RegisterEvent.js'),
-	logoutEvent				= require('./LogoutEvent.js'),
-	pingEvent				= require('./PingEvent.js'),
-	getRandomCardEvent 		= require('./GetRandomCardEvent'),
-	toobusy 				= require('toobusy-js'),
-	setProfileCardEvent		= require('./SetProfileCardEvent.js'),
-	Type					= require('type-of-is'),
-	cluster 				= require('cluster'),
+var	cluster 				= require('cluster'),
 	domain 					= require('domain');
 	require('array-sugar');
-	//var numCPUs = require('os').cpus().length;
 	
 if (cluster.isMaster) {
 	
@@ -122,6 +95,34 @@ if (cluster.isMaster) {
     });
 	
 	d.run(function () {
+		
+		var StringDecoder		= require('string_decoder').StringDecoder,  //Package for decoding buffers. Needed to decode server communication and passwords from database(buffers)
+		bcrypt					= require('bcrypt'),
+		mysql					= require('mysql'),
+		express					= require('express'),
+		session					= require('express-session'),
+		crypto					= require('crypto'),
+		server_port				= process.env.OPENSHIFT_NODEJS_PORT || 8080,
+		server_ip_address		= process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1',
+		mysql_port				= process.env.OPENSHIFT_MYSQL_DB_PORT || 8080,
+		mysql_host				= process.env.OPENSHIFT_MYSQL_DB_HOST || '127.0.0.1',
+		mysql_user				= process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root',
+		mysql_database			= 'dibsserver',
+		decoder					= new StringDecoder('utf8'), //Client send UTF8 buffer which this is used to decode
+		app						= express(),
+		expressWs				= require('express-ws')(app),
+		loginEvent				= require('./LoginEvent.js'),
+		restoreSessionEvent		= require('./RestoreSessionEvent.js'),
+		setCardEvent			= require('./SetCardEvent.js'),
+		getProfileCardEvent		= require('./GetProfileCardEvent.js'),
+		registerEvent			= require('./RegisterEvent.js'),
+		logoutEvent				= require('./LogoutEvent.js'),
+		pingEvent				= require('./PingEvent.js'),
+		getRandomCardEvent 		= require('./GetRandomCardEvent'),
+		toobusy 				= require('toobusy-js'),
+		setProfileCardEvent		= require('./SetProfileCardEvent.js'),
+		Type					= require('type-of-is'),
+		
 		console.log("ip: " + server_ip_address + ":" + server_port);
 		console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
 		console.log("mysql_user: " + mysql_user);
