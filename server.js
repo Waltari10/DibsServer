@@ -126,7 +126,7 @@ if (cluster.isMaster) {
 		getRandomCardEvent 		= require('./GetRandomCardEvent'),
 		toobusy 				= require('toobusy-js'),
 		setProfileCardEvent		= require('./SetProfileCardEvent.js'),
-		Type					= require('type-of-is'),
+		Type					= require('type-of-is');
 		
 		console.log("ip: " + server_ip_address + ":" + server_port);
 		console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
