@@ -64,9 +64,8 @@ var StringDecoder			= require('string_decoder').StringDecoder,  //Package for de
 	toobusy 				= require('toobusy-js'),
 	setProfileCardEvent		= require('./SetProfileCardEvent.js'),
 	Type					= require('type-of-is'),
-	domain					= require('domain'),
-	d						= domain.create(),
-	cluster 				= require('cluster');
+	cluster 				= require('cluster'),
+	domain 					= require('domain');
 	require('array-sugar');
 	//var numCPUs = require('os').cpus().length;
 	
@@ -86,88 +85,127 @@ if (cluster.isMaster) {
 
 } else {
 	
-	console.log("ip: " + server_ip_address + ":" + server_port);
-	console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
-	console.log("mysql_user: " + mysql_user);
-	console.log("mysql_database_name: " + mysql_database);
+	var d = domain.create();
 	
-	var mysqlConnection = mysql.createConnection({ //connect to mysql database
-		host		: mysql_host,
-		user		: mysql_user,
-		password	: process.env.OPENSHIFT_MYSQL_DB_PASSWORD || "password",
-		port		: mysql_port,
-		database	: mysql_database
-	});
+	d.on('error', function(er) {
+		console.error('error', er.stack);
 
-	module.exports = genUuid;
+		// Note: we're in dangerous territory!
+		// By definition, something unexpected occurred,
+		// which we probably didn't want.
+		// Anything can happen now!  Be very careful!
 
-	app.use(function(req, res, next) { //HTTP
-		if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience"); //Client doesn't receive message
-		else next();
-	});
+		try {
+			// make sure we close down within 30 seconds
+			var killtimer = setTimeout(function() {
+				process.exit(1);
+			}, 30000);
+			// But don't keep the process open just for that!
+			killtimer.unref();
 
-	expressWs.getWss().on('connection', function(ws) {
-	  console.log('connection open');
-	});
+			// stop taking new requests.
+			server.close();
 
-	app.use(
-		session({
-		cookie: { secure: false, maxAge: null },  //True requires ssl
-		maxAge: null,
-		secure: false,
-		resave: false,
-		saveUninitialized: false,
-		genid: function (req) {
-			return genUuid();
-		},
-		secret: 'keyboard cat'
-	}));
+			// Let the master know we're dead.  This will trigger a
+			// 'disconnect' in the cluster master, and then it will fork
+			// a new worker.
+			cluster.worker.disconnect();
 
-	app.ws('/', function (ws, req) { //Websocket yhteys
-
-		ws.on('close', function() { //Cant send stuff cus iz closed dummy
-			console.log('closed connection');
-		});
+			// try to send an error to the request that triggered the problem
+			//res.statusCode = 500;
+			//res.setHeader('content-type', 'text/plain');
+			//res.end('Oops, there was a problem!\n');
+		} catch (er2) {
+			// oh well, not much we can do at this point.
+			console.error('Error sending 500!', er2.stack);
+		}
+    });
+	
+	d.run(function () {
+		console.log("ip: " + server_ip_address + ":" + server_port);
+		console.log("mysql_ip: " + mysql_host + ":" + mysql_port);
+		console.log("mysql_user: " + mysql_user);
+		console.log("mysql_database_name: " + mysql_database);
 		
-		ws.on('error', function() {
-			console.log("error");
+		var mysqlConnection = mysql.createConnection({ //connect to mysql database
+			host		: mysql_host,
+			user		: mysql_user,
+			password	: process.env.OPENSHIFT_MYSQL_DB_PASSWORD || "password",
+			port		: mysql_port,
+			database	: mysql_database
 		});
-		
-		ws.on('message', function (textChunk) {
-			var message = decoder.write(textChunk), json = JSON.parse(message);
-			console.log(message);
-			console.log(json.event);
+
+		module.exports = genUuid;
+
+		app.use(function(req, res, next) { //HTTP
+			if (toobusy()) res.send(503, "Server busy, try again soon. Sorry for the inconvenience"); //Client doesn't receive message
+			else next();
+		});
+
+		expressWs.getWss().on('connection', function(ws) {
+		  console.log('connection open');
+		});
+
+		app.use(
+			session({
+			cookie: { secure: false, maxAge: null },  //True requires ssl
+			maxAge: null,
+			secure: false,
+			resave: false,
+			saveUninitialized: false,
+			genid: function (req) {
+				return genUuid();
+			},
+			secret: 'keyboard cat'
+		}));
+
+		app.ws('/', function (ws, req) { //Websocket yhteys
+
+			ws.on('close', function() { 
+				console.log('closed connection');
+			});
 			
-			switch(json.event) {
-				case "login":
-					loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
-					break;
-				case "register":
-					registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
-					break;
-				case "getProfileCard":
-					getProfileCardEvent.Action(json, ws, mysqlConnection);
-					break;
-				case "setProfileCard":
-					setProfileCardEvent.Action(json, ws, mysqlConnection);
-					break;
-				case "getRandomCard":
-					getRandomCardEvent.Action(json, ws, mysqlConnection, Type);
-					break;
-				case "logout":
-					logoutEvent.Action(json, ws, req);
-					break;
-				case "pong":
-					pingEvent.Action(json, ws);
-					break;
-				case "restoreSession":
-					restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
-					break;
-			}
+			ws.on('error', function() {
+				console.log("error");
+			});
+			
+			ws.on('message', function (textChunk) {
+				var message = decoder.write(textChunk), json = JSON.parse(message);
+				console.log(message);
+				console.log(json.event);
+				
+				switch(json.event) {
+					case "login":
+						loginEvent.Action(json, ws, req, mysqlConnection, bcrypt, decoder, RememberSession);
+						break;
+					case "register":
+						registerEvent.Action(json, ws, req, mysqlConnection, bcrypt, RememberSession);
+						break;
+					case "getProfileCard":
+						getProfileCardEvent.Action(json, ws, mysqlConnection);
+						break;
+					case "setProfileCard":
+						setProfileCardEvent.Action(json, ws, mysqlConnection);
+						break;
+					case "getRandomCard":
+						getRandomCardEvent.Action(json, ws, mysqlConnection, Type);
+						break;
+					case "logout":
+						logoutEvent.Action(json, ws, req);
+						break;
+					case "pong":
+						pingEvent.Action(json, ws);
+						break;
+					case "restoreSession":
+						restoreSessionEvent.Action(json, ws, req.sessionID, decoder, mysqlConnection);
+						break;
+				}
+			});
 		});
-	});
 
-	app.listen(server_port, server_ip_address);
+		app.listen(server_port, server_ip_address);
+	
+	});
 }
 
 
