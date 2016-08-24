@@ -1,3 +1,2 @@
-The OpenShift `nodejs` cartridge documentation can be found at:
-
-http://openshift.github.io/documentation/oo_cartridge_guide.html#nodejs
+The backend of the original Dibs prototype. Done with Node.js, JavaScript and
+various Node.js addons.
